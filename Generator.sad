@@ -1,0 +1,110 @@
+FFS;
+NPARA=1;
+LOSSMAP;
+Print["LOSSSMAP =",?LOSSMAP];
+If[?LOSSMAP<=>1,FFS["ABORT"]];
+
+Get["inc/libTrack.n"];
+Get["inc/libPhysics.n"];
+Get["inc/libApert.n"];
+Get["inc/libRecord.n"];
+
+latticeFile="BEPCII.sad";
+GetMAIN[latticeFile];
+USE RING;
+CELL;
+CALC;
+
+RFSW;
+RAD;
+NOFLUC;
+GCUT=3; !cut-off value of Gaussian distribution,3-sigma
+
+(* Set parameters *)
+If[iseed<>-1,SeedRandom[iseed]];
+date0=DateString[];
+
+(* Set Aperture *)
+!ChangeInitalPoint[];
+ap=SetApert[];
+apposi=SetApertSize[];
+
+(* Observation point *)
+pobs=LINE["POSITION","AP.*|*BPM*"];
+nobs=Length[pobs];
+lobs=LINE["S",Drop[pobs,1]]-LINE["S",Drop[pobs,-1]];
+lobs=PrependTo[lobs,LINE["S",pobs[[1]]]];
+
+(* Scattering point *)
+pscat=Select[LINE["POSITION"],(LINE["L",#]>0)&];
+nscat=Length[pscat];
+lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
+lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
+Print[lscat[[nscat]]];
+
+FFS["RFSW RAD FLUC"];
+FFS["INTRA"];
+
+(* Parameters *)
+Get["Para_BEPC.txt"];
+emit=Emittance[];
+mat2scat=TransferMatrices/.Emittance[Matrix->True];
+
+(* Generate *)
+geneSum={};
+lossSum={};
+accept={};
+lostParticles={};
+!region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
+npar=10000;
+
+beam0=GenParticles[npar, emitx, emity];
+proc="T";
+!nscat=3;
+
+If[proc=="T", 
+  filenameWto="output/TousWtodE.txt";
+  filenameWsumto="output/TousWsumtoS.txt";
+];
+
+If[proc=="C",
+  thetamax=0.17444;  !theta max cut off is 10 degree
+  filenameWto="output/CoulWtoTheta.txt";
+  filenameWsumto="output/CoulWsumtoS.txt";
+];
+
+If[proc=="B",
+  minu=6.8e-3;
+  filenameWto="output/BremWtodE.txt";
+  filenameWsumto="output/BremWsumtoS.txt";
+];
+
+fileWto=OpenWrite[filenameWto];
+fileWsumto=OpenWrite[filenameWsumto];
+
+(* Loop for pscat *)
+Do[
+  beam=MoveScatPoint[beam0,pscat[[iscat]]];
+  If[proc=="T",
+    {w,beam1}=TouscScat[beam,npar,emitx,emity,Lbunch,sigE];
+    PrintTousGeneInfo[beam1,w,fileWsumto,fileWto,iscat];
+  ]; 
+  
+  If[proc=="C",
+    {w,theta,beam1}=CoulombScat[beam,thetamax];
+    PrintCoulGeneInfo[beam1,w,theta,fileWsumto,fileWto,iscat];
+  ]; 
+
+  If[proc=="B",
+    {w,de,beam1}=BremsScat[beam,minu];
+    PrintBremGeneInfo[beam1,w,de,fileWsumto,fileWto,iscat];
+  ];
+
+  ,{iscat,1,nscat}];
+ 
+Close[fileWsumto];
+Close[fileWto];
+
+Exit[];
+
+

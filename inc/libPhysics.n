@@ -1,0 +1,146 @@
+!Generate single beam background
+TouscScat[beam_,npar_,emitxfile_:Null,emityfile_:Null,Lbunchfile_:Null,sigEfile_:Null]:=Module[{
+  a=1,eps=1e-6,
+  alphax,betax,etax,etapx,alphay,betay,etay,etapy,gammax,gammay,
+  emitx,emity,emitz,sigz,sigd,betaz,dd1,dd2,X1,PX1,PX2,x1,px1,px2,
+  sigx,sigy,sigpx,Hx,q,qn,theta,sigma,fac=0.5
+  },
+
+  p=beam[[1]];
+  {alphax,betax,etax,etapx}=Twiss[{"AX","BX","EX","EPX"},p];
+  {alphay,betay,etay,etapy}=Twiss[{"AY","BY","EY","EPY"},p];
+  gammax=(1+alphax^2)/betax;
+
+  {emitx,emity,emitz}=Emittances/.emit;
+  If[emitxfile<=>Null,
+    emitx=emitxfile;
+    emity=emityfile;
+    sigd=sigEfile;
+    sigz=Lbunchfile;
+    ,
+    sigd=MomentumSpread/.emit; 
+    sigz=BunchLength/.emit;
+    ];
+  betaz=sigz/sigd;
+  !Print["emitx:"//emitx//"; emity:"//emity//"; sigd:"//sigd//"; sigz:"//sigz]; 
+
+  dd1=2*a*sigd*(Random[npar]-0.5);
+  dd2=2*a*sigd*(Random[npar]-0.5);
+
+  X1=2*a*Sqrt[emitx]*(Random[npar]-0.5);
+  PX1=-2*a*Sqrt[emitx]*(Random[npar]-0.5);
+  PX2=-2*a*Sqrt[emitx]*(Random[npar]-0.5);
+
+  x1=Sqrt[betax]*X1+etax*dd1;
+  px1=(PX1-alphax*X1)/Sqrt[betax]+etapx*dd1;
+  X2=(x1-dd2*etax)/Sqrt[betax];
+  px2=(PX2-alphax*X2)/Sqrt[betax]+etapx*dd2;
+
+  sigx=Sqrt[emitx*betax+(etax*sigd)^2];
+  Hx=gammax*etax^2+2*alphax*etax*etapx+betax*etapx^2;
+  sigpx=Sqrt[emitx/betax]*Sqrt[1+Hx*sigd^2/emitx];
+  sigy=Sqrt[emity*betay+(etay*sigd)^2];
+
+  q=0.5*(px2-px1);
+  qn=Abs[q];
+
+  eps=1e-6;
+  theta=(Pi/2-eps)*Random[npar]+eps;
+
+  gamma=LINE["GAMMA","$$$"];
+  re=2.82e-15;
+  sigma=Pi*re^2/2/(gamma*qn)^4*(2/Cos[theta]^3-1/Cos[theta])*Sin[theta]*(Pi/2-eps);
+
+!  rate=(PBUNCH*SpeedOfLight)/(2*Pi^2*gamma*sigpx*sigx*sigy*sigz)*sigma*qn*Exp[-(qn/sigpx)^2]*(a*sigpx)/npar;
+
+(* 1/tau = Sum_i (c*PBUNCH*w_i*L_i)/circ *)
+
+  w=fac/(2*Pi^2*gamma*sigpx*sigx*sigy*sigz)*sigma*qn*Exp[-(qn/sigpx)^2]*(a*sigpx)/npar;
+
+  sign=If[#>0.5,1,-1]&/@Random[npar];
+  de=gamma*qn*Cos[theta]*sign;
+  !Print["w:"//w//"; de:"//de//"qn:"//qn];  
+
+  tmp=If[#[[1]]<-1,{0,0},#]&/@Thread[{de,w}];
+  de=tmp[[,1]];
+  w=tmp[[,2]];
+
+  xx=Table[0,{npar}]+Twiss["DX",p];
+  px=Table[0,{npar}]+Twiss["DPX",p];
+  yy=Table[0,{npar}]+Twiss["DY",p];
+  py=Table[0,{npar}]+Twiss["DPY",p];
+  zz=Table[0,{npar}];
+
+  {w,{beam[[1]],{xx,px,yy,py,zz,de,beam[[2,7]]}}}  
+
+  ];
+
+TouscScatSAD[beam_]:=Module[{},
+
+(* 1/tau = Sum_i (c*PBUNCH*w_i*L_i)/circ *)
+
+  p=beam[[1]];
+  ll=LINE["L",p];
+  If[ll==0,ll=1];
+
+  xx=Table[0,{npar}];
+  px=Table[0,{npar}];
+  yy=Table[0,{npar}];
+  py=Table[0,{npar}];
+  zz=Table[0,{npar}];
+
+  tb=TouschekTable;
+
+  ee=tb[[2,1]];
+  ptot=tb[[4,p]];
+
+  spl=Spline[Thread[{ee,ptot}]];
+
+  e1=Min[ee];
+  e2=Max[ee];
+  delta=(e2-e1)/(npar/2);
+  de=Join[-Reverse[Range[npar/2]*delta+e1],Range[npar/2]*delta+e1];
+
+  de=If[Abs[#]<e1,e1,#]&/@de;
+  w=-(Derivative[1][spl][Abs[#]]&/@de)*delta*circ/ll;
+  w=w/SpeedOfLight/PBUNCH;
+  {w,{beam[[1]],{xx,px,yy,py,zz,de,beam[[2,7]]}}}  
+  
+  ];
+
+
+XSectionB[u_]:=Module[{alpha=1/137},
+  (* u = dE/E0 *)
+  Z=7;
+  re=2.82e-15;
+  gamma=LINE["GAMMA","$$$"];
+  4*alpha*re^2*Z^2*(4/3/u)*((1-u+0.75*u^2)*Log[183/Z^(1/3)]+(1/9)*(1-u))
+  ];
+
+BremsScat[beam_,minu_:0.01]:=Module[{delta},
+  npar=Length[beam[[2,7]]];
+  u=minu+(1-minu)*Random[npar];
+  delta=(1-minu)/npar;
+  w=delta*XSectionB[#]&/@u;
+  {w,u,{beam[[1]],{beam[[2,1]],beam[[2,2]],beam[[2,3]],beam[[2,4]],beam[[2,5]],beam[[2,6]]-u,beam[[2,7]]}}}
+  ];
+
+XSectionC[theta_]:=Module[{},
+  Z=7;
+  re=2.82e-15;
+  gamma=LINE["GAMMA","$$$"];
+  theta0=Z^(1/3)/137/gamma;
+!  (4*re^2*Z^2/gamma^2/(theta^2+theta0^2)^2)
+  (8*Pi*Sin[theta]*re^2*Z^2/gamma^2/(theta^2+theta0^2)^2)
+  ];
+
+CoulombScat[beam_,maxtheta_:0.001]:=Module[{delta},
+  npar=Length[beam[[2,7]]];
+  th=maxtheta*Random[npar];
+  ph=2*Pi*Random[npar];
+  pxc=beam[[2,2]]+(1+beam[[2,6]])*th*Cos[ph];
+  pyc=beam[[2,4]]+(1+beam[[2,6]])*th*Sin[ph];
+  delta=maxtheta/npar;
+  w=delta*XSectionC[#]&/@th;
+  {w,th,{beam[[1]],{beam[[2,1]],pxc,beam[[2,3]],pyc,beam[[2,5]],beam[[2,6]],beam[[2,7]]}}}
+  ];

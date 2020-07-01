@@ -1,0 +1,39 @@
+! functions to record information
+
+PrintTousGeneInfo[beam1_,w_,file1_,file2_,iscat_]:=Module[{},
+  wSum=0;
+  Do[wSum=wSum+w[[i]],{i,1,Length[w]}];
+  sscat=LINE["S",beam1[[1]] ];
+  Write[file1,wSum," ",sscat," ",lscat[[iscat]] ];
+
+  Do[
+    Write[file2,w[[i]]," ",beam1[[2,6,i]]];
+  ,{i,1,Length[w]}];
+
+];
+
+PrintCoulGeneInfo[beam1_,w_,theta_,file1_,file2_,iscat_]:=Module[{},
+  wSum=0;
+  Do[wSum=wSum+w[[i]],{i,1,Length[w]}];
+  sscat=LINE["S",beam1[[1]] ];
+  Write[file1,wSum," ",sscat," ",lscat[[iscat]] ];
+ 
+  Do[
+    Write[file2,w[[i]]," ",theta[[i]]];
+  ,{i,1,Length[w]}]; 
+
+];
+
+PrintBremGeneInfo[beam1_,w_,de_,file1_,file2_,iscat_]:=Module[{},
+  wSum=0;
+  Do[wSum=wSum+w[[i]],{i,1,Length[w]}];
+  sscat=LINE["S",beam1[[1]] ];
+  Write[file1,wSum," ",sscat," ",lscat[[iscat]] ];
+
+  Do[
+    Write[file2,w[[i]]," ",de[[i]]];
+  ,{i,1,Length[w]}];
+
+];
+
+

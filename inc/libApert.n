@@ -1,0 +1,58 @@
+!Set up aperture
+ChangeInitalPoint[]:=Module[{bl,p},
+  bl=ExtractBeamLine[BeamLineName[]];
+  p=LINE["POSITION","INJ"];
+  bl$inj=Join[Take[bl,{p,-1}],Take[bl,{1,p-1}]];
+
+  FFS["USE bl$inj"];
+  FFS["CELL"];
+  FFS["CALC"];
+];
+
+SetApert[]:=Module[{ap},
+  bl=ExtractBeamLine[BeamLineName[]];
+  ap=Select[LINE["POSITION"],(LINE["L",#]>0)&];
+  ap=Reverse[ap];
+
+  SetElement["AP","APERT"];
+  Do[
+   bl=(Join[Take[bl,{1,ap[[i]]-1}],BeamLine[AP],Take[bl,{ap[i]}],Take[bl,{ap[[i]]+1,-1}]]);
+  ,{i,1,Length[ap]}];
+  AppendTo[bl,BeamLine[AP]];
+
+  FFS["USE bl"];
+  FFS["CELL"];
+  FFS["CALC"];
+  ap
+];
+
+SetApertSize[]:=Module[{},
+  APposi=LINE["POSITION","AP.*"];
+  APS=LINE["S","AP.*"];
+  Ltotal=237.5314;
+  If[LINE["S","IP1"]==0, 
+    APDisIP=Min[#,Ltotal-#]&/@APS,
+    APDisIP=Abs[#-LINE["S","IP1"]]&/@APS
+  ];  
+
+  Do[
+    If[APDisIP[[i]]<0.715, rx=0.0315; ry=0.0315;];
+    If[APDisIP[[i]]>0.715&&APDisIP[[i]]<0.915, rx=0.0315+(APDisIP[[i]]-0.715)*0.1175; ry=0.0315+(APDisIP[[i]]-0.715)*0.1175];
+    If[APDisIP[[i]]>0.915 && APDisIP[[i]]<1.865, rx=0.055; ry=0.055];
+    If[APDisIP[[i]]>1.865 && APDisIP[[i]]<1.924, rx=0.054+(APDisIP[[i]]-1.865)*6/59; ry=0.054+(APDisIP[[i]]-1.865)*1/59];
+    If[APDisIP[[i]]>1.924 && APDisIP[[i]]<2.019, rx=0.06; ry=0.055];
+    If[APDisIP[[i]]>2.019 && APDisIP[[i]]<2.2, rx=0.0285; ry=0.038];
+    If[APDisIP[[i]]>2.2 && APDisIP[[i]]<15.18, rx=0.052; ry=0.052];
+    If[APDisIP[[i]]>15.18, rx=0.055; ry=0.028;];
+
+    If[APDisIP[[i]]<2.019, dx=APDisIP[[i]]*0.011, dx=0];
+!    Print["rx:"//rx//"; ry:"//ry//"; dx:"//dx];
+    LINE["AX",APposi[[i]]]=rx;
+    LINE["AY",APposi[[i]]]=ry;
+    LINE["DX",APposi[[i]]]=dx;    
+  ,{i,1,Length[APposi]}]; 
+
+  APposi
+];
+
+
