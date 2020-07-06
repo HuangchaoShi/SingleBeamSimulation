@@ -28,6 +28,8 @@ date0=DateString[];
 !ChangeInitalPoint[];
 ap=SetApert[];
 apposi=SetApertSize[];
+Allposi=LINE["POSITION"];
+PrintApert[Allposi];
 
 (* Observation point *)
 pobs=LINE["POSITION","AP.*|*BPM*"];
@@ -56,54 +58,54 @@ lossSum={};
 accept={};
 lostParticles={};
 !region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
-npar=10000;
+npar=5;
+maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
 proc="T";
-!nscat=3;
+nscat=2;
 
 If[proc=="T", 
-  filenameWto="output/TousWtodE.txt";
-  filenameWsumto="output/TousWsumtoS.txt";
+  filename="output/TousTracking.txt";
 ];
 
 If[proc=="C",
   thetamax=0.17444;  !theta max cut off is 10 degree
-  filenameWto="output/CoulWtoTheta.txt";
-  filenameWsumto="output/CoulWsumtoS.txt";
+  filename="output/CoulTracking.txt";
 ];
 
 If[proc=="B",
   minu=6.8e-3;
-  filenameWto="output/BremWtodE.txt";
-  filenameWsumto="output/BremWsumtoS.txt";
+  filename="output/BremTracking.txt";
 ];
 
-fileWto=OpenWrite[filenameWto];
-fileWsumto=OpenWrite[filenameWsumto];
+fileTracking=OpenWrite[filename];
 
 (* Loop for pscat *)
 Do[
   beam=MoveScatPoint[beam0,pscat[[iscat]]];
-  If[proc=="T",
-    {w,de,beam1}=TouscScat[beam,npar,emitx,emity,Lbunch,sigE];
-    PrintTousGeneInfo[beam1,w,de,fileWsumto,fileWto,iscat];
-  ]; 
-  
-  If[proc=="C",
-    {w,theta,beam1}=CoulombScat[beam,thetamax];
-    PrintCoulGeneInfo[beam1,w,theta,fileWsumto,fileWto,iscat];
-  ]; 
+  !dX means offset value: de for touschek and brems, dtheta for coulomb scattering
 
+  If[proc=="T",
+    {w,dX,beam1}=TouscScat[beam,npar,emitx,emity,Lbunch,sigE];
+  ]; 
+  If[proc=="C",
+    {w,dX,beam1}=CoulombScat[beam,thetamax];
+  ]; 
   If[proc=="B",
-    {w,de,beam1}=BremsScat[beam,minu];
-    PrintBremGeneInfo[beam1,w,de,fileWsumto,fileWto,iscat];
+    {w,dX,beam1}=BremsScat[beam,minu];
   ];
+  Print[dX];
+  Print[beam1]; 
+  beam1={50,{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{1,1}}};
+  beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
+  Print[beam2];
+  !PrintTrackingInfo[proc,w,dX,pscat[[iscat]],beam2]; 
 
   ,{iscat,1,nscat}];
- 
-Close[fileWsumto];
-Close[fileWto];
+
+Close[fileTracking];
+END;
 
 Exit[];
 
