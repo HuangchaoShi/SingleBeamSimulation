@@ -1,6 +1,6 @@
 !Generate single beam background
 TouscScat[beam_,npar_,emitxfile_:Null,emityfile_:Null,Lbunchfile_:Null,sigEfile_:Null]:=Module[{
-  a=1,eps=1e-6,
+  a=3,eps=1e-6,
   alphax,betax,etax,etapx,alphay,betay,etay,etapy,gammax,gammay,
   emitx,emity,emitz,sigz,sigd,betaz,dd1,dd2,X1,PX1,PX2,x1,px1,px2,
   sigx,sigy,sigpx,Hx,q,qn,theta,sigma,fac=0.5
@@ -116,7 +116,6 @@ XSectionB[u_]:=Module[{alpha=1/137},
   gamma=LINE["GAMMA","$$$"];
 
 ! the following first formula only consider the scattering from nuclear , the second formula include both nuclear and Extranuclear electronics
-
 !  4*alpha*re^2*Z^2*(4/3/u)*((1-u+0.75*u^2)*Log[183/Z^(1/3)]+(1/9)*(1-u))
   4*alpha*re^2*((4/3/u-4/3+u)*(Z^(2)Log[183/Z^(1/3)]+Z*Log[1194/Z^(2/3)])+Z*(Z+1)/9*(1-u))
   ];
@@ -147,14 +146,5 @@ CoulombScat[beam_,maxtheta_:0.001]:=Module[{delta},
   delta=maxtheta/npar;
   w=delta*XSectionC[#]&/@th;
 
-  !set theta threshold
-  !betax=Twiss["BX",beam[[1]]];
-  !betay=Twiss["BY",beam[[1]]];
-  !pxmin=0.03/Sqrt[73.46*betax];
-  !pymin=0.0275/Sqrt[102.73*betay];
-  !If[(pxc<pxmin&&pyc<pymin),
-  !  th=0; w=0;
-  !];
- 
   {w,th,{beam[[1]],{beam[[2,1]],pxc,beam[[2,3]],pyc,beam[[2,5]],beam[[2,6]],beam[[2,7]]}}}
   ];

@@ -1,3 +1,16 @@
+DeleteSOL[]:=Module[{deposi},
+  bl=ExtractBeamLine[BeamLineName[]];
+  SOLposi=Select[LINE["POSITION"],(LINE["TYPE",#]==20)&];
+  deposi=Reverse[SOLposi]; 
+  Do[
+    bl=Join[Take[bl,{1,deposi[[ideposi]]-1}],Take[bl,{deposi[[ideposi]]+1,-1}]];
+  ,{ideposi,1,Length[deposi]}];
+  FFS["USE bl"];
+  FFS["CELL"];
+  FFS["CALC"];
+  bl
+];
+
 GenParticles[npar_,emitxfile_:0,emityfile_:0]:=Module[{a,u,pu,v,pv,zz,dd,p,flag},
   emit=Emittance[Matrix->True];
   a=NormalCoordinates/.emit;

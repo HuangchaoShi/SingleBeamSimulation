@@ -11,6 +11,7 @@ Get["inc/libRecord.n"];
 
 latticeFile="BEPCII.sad";
 GetMAIN[latticeFile];
+
 USE RING;
 CELL;
 CALC;
@@ -24,8 +25,11 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
 
-(* Set Aperture *)
+(* adjust beamline *)
+bl=DeleteSOL[];
 !ChangeInitalPoint[];
+
+(* Set Aperture *)
 ap=SetApert[];
 apposi=SetApertSize[];
 Allposi=LINE["POSITION"];
@@ -63,7 +67,7 @@ maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
 proc="T";
-nscat=2;
+!nscat=3;
 
 If[proc=="T", 
   filename="output/TousTracking.txt";
@@ -95,18 +99,16 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
-  Print[dX];
-  Print[beam1]; 
-  beam1={50,{{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{1,1}}};
+  Print[beam1[[1]],dX];
+  beam1={50,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
-  Print[beam2];
+  Print[beam2[[2]]];
   !PrintTrackingInfo[proc,w,dX,pscat[[iscat]],beam2]; 
 
   ,{iscat,1,nscat}];
 
 Close[fileTracking];
-END;
 
-Exit[];
+!Exit[];
 
 
