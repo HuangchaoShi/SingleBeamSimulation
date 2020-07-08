@@ -121,8 +121,8 @@ SaveFile[]:=Module[{},
 
   ];
 
-Nb[bc_]:=Module[{},
-  circ=LINE["S","$$$"]-(Twiss["DZ","$$$"]-Twiss["DZ","^^^"]);
+Nb[bc_,circ_]:=Module[{},
+!  circ=LINE["S","$$$"]-(Twiss["DZ","$$$"]-Twiss["DZ","^^^"]);
   f0=SpeedOfLight/circ;
   bc/(ElectronCharge*f0)
   ];
@@ -130,3 +130,26 @@ Nb[bc_]:=Module[{},
 ng[p_:1e-7]:=Module[{T=300,kb=1.38e-23},
   2*p/kb/T
   ];
+
+CalLostNumber[proc_,w_,beamCurrent_,bunchNum_,lscat_,circum_,pgas_]:=Module[{dN},
+  Nbeam=Nb[beamCurrent,circum];
+  If[proc=="T",
+    Nbunch=Nbeam/bunchNum;
+    inverTau=w*SpeedOfLight*Nbunch*lscat/circum;
+  ];
+  If[proc=="C"||proc=="B",
+    Ngas=ng[pgas];
+    inverTau=w*SpeedOfLight*Ngas*lscat/circum;
+  ];
+  dN=inverTau*Nbeam;
+  dN
+];
+
+LostDisFromIP[beam2_,circum_]:=Module[{DisFromIP},
+  LostS=If[#==0,0,LINE["S",#]]&/@beam2[[2,8]];
+  If[LINE["S","IP1"]==0,
+    DisFromIP=If[#<(circum-#),#,#-circum]&/@LostS,
+    DisFromIP=LostS-circum
+  ];
+  DisFromIP
+];

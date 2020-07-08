@@ -24,6 +24,7 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
+Get["Para_BEPC.txt"];
 
 (* adjust beamline *)
 bl=DeleteSOL[];
@@ -46,13 +47,11 @@ pscat=Select[LINE["POSITION"],(LINE["L",#]>0)&];
 nscat=Length[pscat];
 lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
 lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
-Print[lscat[[nscat]]];
 
 FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
 
-(* Parameters *)
-Get["Para_BEPC.txt"];
+(* Emit Parameters *)
 emit=Emittance[];
 mat2scat=TransferMatrices/.Emittance[Matrix->True];
 
@@ -61,9 +60,9 @@ geneSum={};
 lossSum={};
 accept={};
 lostParticles={};
-!region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
-npar=5;
-maxturns=1000;
+region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
+npar=100;
+maxturns=100;
 
 beam0=GenParticles[npar, emitx, emity];
 proc="T";
@@ -74,7 +73,7 @@ If[proc=="T",
 ];
 
 If[proc=="C",
-  thetamax=0.17444;  !theta max cut off is 10 degree
+  thetamax=15*Pi/180;  !theta max cut off
   filename="output/CoulTracking.txt";
 ];
 
@@ -89,6 +88,7 @@ fileTracking=OpenWrite[filename];
 Do[
   beam=MoveScatPoint[beam0,pscat[[iscat]]];
   !dX means offset value: de for touschek and brems, dtheta for coulomb scattering
+  Print["Scattering at:"//LINE["NAME",pscat[[iscat]]]//" "//LINE["POSITION",pscat[[iscat]]] ];
 
   If[proc=="T",
     {w,dX,beam1}=TouscScat[beam,npar,emitx,emity,Lbunch,sigE];
@@ -99,16 +99,16 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
-  Print[beam1[[1]],dX];
-  beam1={50,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
-  Print[beam2[[2]]];
-  !PrintTrackingInfo[proc,w,dX,pscat[[iscat]],beam2]; 
+  dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
 
+  DisIP=LostDisFromIP[beam2,circum];
+
+  PrintLostInfo[proc,dN,dX,pscat[[iscat]],beam2,DisIP,fileTracking]; 
   ,{iscat,1,nscat}];
 
 Close[fileTracking];
 
-!Exit[];
+Exit[];
 
 

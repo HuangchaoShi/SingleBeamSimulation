@@ -25,4 +25,4 @@ tunes = 0.034;
 alfap = 0.0237; !Momentum comoaction
 sigE = 5.16e-4; ! energy spread
 
-
+pgas = 1e-7; ! pressure of vacuum chamber
