@@ -1,0 +1,35 @@
+Module[{argp, argv = $GetCommandLine[]},
+  If[Length[argv]<=>7,
+    Print[ "Argument Error: Usage is sad Generate.sad T/B/C npar seed outfile1 outfile2"];
+    Print["current arguments:"//Length[argv]];
+    Exit[];  
+  ];
+
+  proc=argv[[3]];
+  nparStr=argv[[4]];
+  npar=ToExpression[nparStr];
+  iseed=ToExpression[argv[[5]]];
+  PackageDir=argv[[6]];
+  outfile1=argv[[7]];
+];
+
+If[proc=="T",
+  Print["Generate Touschek"];
+];  
+  
+If[proc=="C",
+  thetamax=15*Pi/180;  !theta max cut off
+  Print["Generate Coulomb"];
+];
+
+If[proc=="B",
+  minu=6.8e-3;      !energy acceptance
+  Print["Generate Bremsstrahlung"];
+];
+maxturns=1000; 
+
+Print["iseed= ", iseed];
+Print["npar= ", npar];
+Print["outfile1= ", outfile1];
+
+
