@@ -1,5 +1,5 @@
 #!/bin/bash
-mkdir logerr mac_htc subjobs
+mkdir logerr mac_htc subjobs output
 #------------  create htcjon_Job_Acc*.sh---------- 
 ID_start=100
 ID_end=200
@@ -29,9 +29,9 @@ EOF
   fi
   cat >> ${MACHTCPATH}/htc_Job_${numsh}.sh<<EOF
   rm -rf ${LOGERRPATH}/Job_${i}.log ${LOGERRPATH}/Job_${i}.err
-  ( ( time sad ${CURRENTPATH}/Generator.sad T $npar $i ${OUTPUTPATH}/TousWsum${i}.txt ${OUTPUTPATH}/TousW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
- ( ( time sad ${CURRENTPATH}/Generator.sad B $npar $i ${OUTPUTPATH}/BremWsum${i}.txt ${OUTPUTPATH}/BremW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
- ( ( time sad ${CURRENTPATH}/Generator.sad C $npar $i ${OUTPUTPATH}/CoulWsum${i}.txt ${OUTPUTPATH}/CoulW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err 
+  ( ( time sad ${CURRENTPATH}/Tracking.sad T $npar $i ${PACKAGEDIR} ${OUTPUTPATH}/TousTracking_${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
+ ( ( time sad ${CURRENTPATH}/Tracking.sad B $npar $i ${PACKAGEDIR} ${OUTPUTPATH}/BremTracking_${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
+ ( ( time sad ${CURRENTPATH}/Tracking.sad C $npar $i ${PACKAGEDIR} ${OUTPUTPATH}/CoulTracking_${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err 
 EOF
   let j=${j}+1
 done

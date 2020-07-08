@@ -4,6 +4,8 @@ LOSSMAP;
 Print["LOSSSMAP =",?LOSSMAP];
 If[?LOSSMAP<=>1,FFS["ABORT"]];
 
+Get["/home/shihc/ustcfs/MDIforSTCF/SingleBeamSimulation/runTracking/TrackingInit.sad"];
+
 Get[StringJoin[PackageDir,"/inc/libTrack.n"]];
 Get[StringJoin[PackageDir,"/inc/libPhysics.n"]];
 Get[StringJoin[PackageDir,"/inc/libApert.n"]];
@@ -24,7 +26,7 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
-Get[StringJoin[PackageDir,"/Para_BEPC.txt"];
+Get[StringJoin[PackageDir,"/Para_BEPC.txt"]];
 
 (* adjust beamline *)
 bl=DeleteSOL[];
@@ -33,8 +35,8 @@ bl=DeleteSOL[];
 (* Set Aperture *)
 ap=SetApert[];
 apposi=SetApertSize[];
-Allposi=LINE["POSITION"];
-PrintApert[Allposi];
+!Allposi=LINE["POSITION"];
+!PrintApert[Allposi];
 
 (* Observation point *)
 pobs=LINE["POSITION","AP.*|*BPM*"];
@@ -60,7 +62,7 @@ mat2scat=TransferMatrices/.Emittance[Matrix->True];
 beam0=GenParticles[npar, emitx, emity];
 
 (* output file *)
-fileout=StringJoin[PackageDir,"/runTracking/output",outfile1];
+filename=outfile1;
 fileTracking=OpenWrite[filename];
 
 (* Loop for pscat *)
