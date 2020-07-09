@@ -2,8 +2,8 @@
 mkdir logerr mac_htc subjobs output
 #------------  create htcjon_Job_Acc*.sh---------- 
 ID_start=100
-ID_end=200
-NUMinONESH=10
+ID_end=199
+NUMinONESH=1
 echo "create htcjon_Job.sh"
 
 PACKAGEDIR="/ustcfs/bes3user/2017/shihc/MDIforSTCF/SingleBeamSimulation"
@@ -11,7 +11,7 @@ CURRENTPATH=`pwd`
 MACHTCPATH="${CURRENTPATH}/mac_htc"
 LOGERRPATH="${CURRENTPATH}/logerr"
 OUTPUTPATH="${CURRENTPATH}/output"
-npar=5000
+npar=1000
 
 let numsh=0
 let j=${NUMinONESH}

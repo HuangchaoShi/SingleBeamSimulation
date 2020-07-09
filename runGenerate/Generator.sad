@@ -3,14 +3,15 @@ NPARA=1;
 LOSSMAP;
 Print["LOSSSMAP =",?LOSSMAP];
 If[?LOSSMAP<=>1,FFS["ABORT"]];
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/runBackStage/GeneInit.sad"];
+Get["/home/shihc/ustcfs/MDIforSTCF/SingleBeamSimulation/runGenerate/GeneInit.sad"];
 
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/inc/libTrack.n"];
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/inc/libPhysics.n"];
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/inc/libApert.n"];
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/inc/libRecord.n"];
+Get[StringJoin[PackageDir,"/inc/libTrack.n"]];
+Get[StringJoin[PackageDir,"/inc/libPhysics.n"]];
+Get[StringJoin[PackageDir,"/inc/libApert.n"]];
+Get[StringJoin[PackageDir,"/inc/libRecord.n"]];
 
-latticeFile="/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/BEPCII.sad";
+latticeFile=StringJoin[PackageDir,"/BEPCII.sad"];
+
 GetMAIN[latticeFile];
 USE RING;
 CELL;
@@ -46,7 +47,7 @@ FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
 
 (* Parameters *)
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/Para_BEPC.txt"];
+Get[StringJoin[PackageDir,"/Para_BEPC.txt"]];
 emit=Emittance[];
 mat2scat=TransferMatrices/.Emittance[Matrix->True];
 

@@ -6,11 +6,12 @@ ID_end=200
 NUMinONESH=10
 echo "create htcjon_Job.sh"
 
-OUTPUTPATH="/home/shihc/ustcfs/MDIforSTCF/SingleSimPackage/runBackStage/output"
+PACKAGEDIR="/ustcfs/bes3user/2017/shihc/MDIforSTCF/SingleBeamSimulation"
 CURRENTPATH=`pwd`
 MACHTCPATH="${CURRENTPATH}/mac_htc"
 LOGERRPATH="${CURRENTPATH}/logerr"
-npar=3000
+OUTPUTPATH="${CURRENTPATH}/output"
+npar=1000
 
 let numsh=0
 let j=${NUMinONESH}
@@ -28,9 +29,9 @@ EOF
   fi
   cat >> ${MACHTCPATH}/htc_Job_${numsh}.sh<<EOF
   rm -rf ${LOGERRPATH}/Job_${i}.log ${LOGERRPATH}/Job_${i}.err
-  ( ( time sad ${CURRENTPATH}/Generator.sad T $npar $i ${OUTPUTPATH}/TousWsum${i}.txt ${OUTPUTPATH}/TousW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
- ( ( time sad ${CURRENTPATH}/Generator.sad B $npar $i ${OUTPUTPATH}/BremWsum${i}.txt ${OUTPUTPATH}/BremW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
- ( ( time sad ${CURRENTPATH}/Generator.sad C $npar $i ${OUTPUTPATH}/CoulWsum${i}.txt ${OUTPUTPATH}/CoulW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err 
+  ( ( time sad ${CURRENTPATH}/Generator.sad T $npar $i ${PACKAGEDIR} ${OUTPUTPATH}/TousWsum${i}.txt ${OUTPUTPATH}/TousW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
+ ( ( time sad ${CURRENTPATH}/Generator.sad B $npar $i ${PACKAGEDIR} ${OUTPUTPATH}/BremWsum${i}.txt ${OUTPUTPATH}/BremW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err
+ ( ( time sad ${CURRENTPATH}/Generator.sad C $npar $i ${PACKAGEDIR} ${OUTPUTPATH}/CoulWsum${i}.txt ${OUTPUTPATH}/CoulW${i}.txt ) >> ${LOGERRPATH}/Job_${i}.log )>& ${LOGERRPATH}/Job_${i}.err 
 EOF
   let j=${j}+1
 done
