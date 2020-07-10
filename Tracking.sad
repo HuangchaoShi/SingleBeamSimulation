@@ -33,8 +33,8 @@ bl=DeleteSOL[];
 (* Set Aperture *)
 ap=SetApert[];
 apposi=SetApertSize[];
-Allposi=LINE["POSITION"];
-PrintApert[Allposi];
+!Allposi=LINE["POSITION"];
+!PrintApert[Allposi];
 
 (* Observation point *)
 pobs=LINE["POSITION","AP.*|*BPM*"];
@@ -62,7 +62,7 @@ accept={};
 lostParticles={};
 region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
 npar=100;
-maxturns=100;
+maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
 proc="T";
@@ -84,6 +84,7 @@ If[proc=="B",
 
 fileTracking=OpenWrite[filename];
 
+Print["stattering points:"//nscat];
 (* Loop for pscat *)
 Do[
   beam=MoveScatPoint[beam0,pscat[[iscat]]];
