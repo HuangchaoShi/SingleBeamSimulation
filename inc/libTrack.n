@@ -5,6 +5,7 @@ DeleteSOL[]:=Module[{deposi},
   Do[
     bl=Join[Take[bl,{1,deposi[[ideposi]]-1}],Take[bl,{deposi[[ideposi]]+1,-1}]];
   ,{ideposi,1,Length[deposi]}];
+
   FFS["USE bl"];
   FFS["CELL"];
   FFS["CALC"];
