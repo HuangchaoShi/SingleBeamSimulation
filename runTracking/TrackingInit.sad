@@ -1,6 +1,6 @@
 Module[{argp, argv = $GetCommandLine[]},
   If[Length[argv]<=>7,
-    Print[ "Argument Error: Usage is sad Generate.sad T/B/C npar seed outfile1 outfile2"];
+    Print[ "Argument Error: Usage is sad Generate.sad T/B/C npar seed PackageDir outfile1"];
     Print["current arguments:"//Length[argv]];
     Exit[];  
   ];

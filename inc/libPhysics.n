@@ -61,7 +61,7 @@ TouscScat[beam_,npar_,emitxfile_:Null,emityfile_:Null,Lbunchfile_:Null,sigEfile_
   de=gamma*qn*Cos[theta]*sign;
   !Print["w:"//w//"; de:"//de//"qn:"//qn];  
 
-  tmp=If[#[[1]]<-1,{0,0},#]&/@Thread[{de,w}];
+  tmp=If[#[[1]]<-0.98||#[[1]]>0.98,{0,0},#]&/@Thread[{de,w}];
   de=tmp[[,1]];
   w=tmp[[,2]];
 
@@ -131,7 +131,6 @@ BremsScat[beam_,minu_:0.01]:=Module[{delta,de,tmp},
   u=minu+(1-minu)*Random[npar];
   delta=(1-minu)/npar;
   w=delta*XSectionB[#]&/@u;
-
   de=beam[[2,6]]-u;
   
   tmp=If[#[[1]]<-0.98,{0,0},#]&/@Thread[{de,w}];

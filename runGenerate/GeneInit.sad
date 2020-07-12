@@ -1,6 +1,6 @@
 Module[{argp, argv = $GetCommandLine[]},
-  If[Length[argv]<=>7,
-    Print[ "Argument Error: Usage is sad Generate.sad T/B/C npar seed outfile1 outfile2"];
+  If[Length[argv]<=>8,
+    Print[ "Argument Error: Usage is sad Generate.sad T/B/C npar seed PackageDir outfile1 outfile2"];
     Print["current arguments:"//Length[argv]];
     Exit[];  
   ];
@@ -9,8 +9,9 @@ Module[{argp, argv = $GetCommandLine[]},
   nparStr=argv[[4]];
   npar=ToExpression[nparStr];
   iseed=ToExpression[argv[[5]]];
-  outfile1=argv[[6]];
-  outfile2=argv[[7]];
+  PackageDir=argv[[6]];
+  outfile1=argv[[7]];
+  outfile2=argv[[8]];
 
 ];
 
@@ -19,7 +20,7 @@ If[proc=="T",
 ];  
   
 If[proc=="C",
-  thetamax=0.17444;  !theta max cut off is 10 degree
+  thetamax=15*Pi/180;  !theta max cut off
   Print["Generate Coulomb"];
 ];
 
