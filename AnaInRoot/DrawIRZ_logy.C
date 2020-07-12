@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 
-void DrawIRZ(){
+void DrawIRZ_logy(){
   SetPrelimStyle();
   SetStyle();
   gStyle->SetOptStat(0);
@@ -23,9 +23,9 @@ void DrawIRZ(){
   TH1F *fIRZ_tous = new TH1F("fIRZ_tous","",nbin,xmin,xmax);
   TH1F *fIRZ_coul = new TH1F("fIRZ_coul","",nbin,xmin,xmax);
   TH1F *fIRZ_brem = new TH1F("fIRZ_brem","",nbin,xmin,xmax); 
-  fIRZ_tous->SetFillColor(kRed);
-  fIRZ_coul->SetFillColor(kGreen);
-  fIRZ_brem->SetFillColor(kCyan);
+  fIRZ_tous->SetLineColor(kRed);
+  fIRZ_coul->SetLineColor(kGreen);
+  fIRZ_brem->SetLineColor(kCyan);
   fIRZ_tous->SetXTitle("Z position /m");
   fIRZ_tous->SetYTitle("Lost number /s"); 
   fIRZ_tous->GetYaxis()->SetRangeUser(0,ymax);
@@ -86,22 +86,31 @@ void DrawIRZ(){
   }
    
   TCanvas *c1 = new TCanvas("c1");
-  THStack *hs_all = new THStack("hs_all","");
-  hs_all->Add(fIRZ_tous);
-  hs_all->Add(fIRZ_coul);
-  hs_all->Add(fIRZ_brem);
+
+  int DrawLogY=1;
+  if(DrawLogY==1){
+    double step=(xmax-xmin)/nbin;
+    for(double m=xmin+step/2;m<xmax;m=m+step){
+      fIRZ_tous->Fill(m,1);
+      fIRZ_coul->Fill(m,1);
+      fIRZ_brem->Fill(m,1);
+    }
+    fIRZ_tous->GetYaxis()->SetRangeUser(1,ymax);
+    gPad->SetLogy();
+  }
 
   TLegend *leg =new TLegend(0.2,0.65,0.55,0.9);
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
   leg->SetTextSize(0.04);
-  leg->AddEntry(fIRZ_tous,"Touschek","f");
-  leg->AddEntry(fIRZ_coul,"Coulomb","f");
-  leg->AddEntry(fIRZ_brem,"Bremsstrahlung","f");
+  leg->AddEntry(fIRZ_tous,"Touschek","l");
+  leg->AddEntry(fIRZ_coul,"Coulomb","l");
+  leg->AddEntry(fIRZ_brem,"Bremsstrahlung","l");
 
-  fIRZ_tous->Draw("HIST"); 
-  hs_all->Draw("sameHIST");
+  fIRZ_tous->Draw(""); 
+  fIRZ_coul->Draw("same");
+  fIRZ_brem->Draw("same");
   leg->Draw();
 
-  c1->Print("Drawings/Zloss.eps");
+  c1->Print("Drawings/Zloss_logy.eps");
 }

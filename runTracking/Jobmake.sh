@@ -11,7 +11,7 @@ CURRENTPATH=`pwd`
 MACHTCPATH="${CURRENTPATH}/mac_htc"
 LOGERRPATH="${CURRENTPATH}/logerr"
 OUTPUTPATH="${CURRENTPATH}/output"
-npar=1000
+npar=200
 
 let numsh=0
 let j=${NUMinONESH}
