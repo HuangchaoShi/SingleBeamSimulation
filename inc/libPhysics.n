@@ -65,17 +65,17 @@ TouscScat[beam_,npar_,emitxfile_:Null,emityfile_:Null,Lbunchfile_:Null,sigEfile_
   de=tmp[[,1]];
   w=tmp[[,2]];
 
-  !xx=Table[0,{npar}]+Twiss["DX",p];
-  !px=Table[0,{npar}]+Twiss["DPX",p];
-  !yy=Table[0,{npar}]+Twiss["DY",p];
-  !py=Table[0,{npar}]+Twiss["DPY",p];
-  !zz=Table[0,{npar}];
-
-  xx=beam[[2,1]]+Twiss["DX",p];
+  xx=Table[0,{npar}]+Twiss["DX",p];
   px=Table[0,{npar}]+Twiss["DPX",p];
-  yy=beam[[2,3]]+Twiss["DY",p]; 
+  yy=Table[0,{npar}]+Twiss["DY",p];
   py=Table[0,{npar}]+Twiss["DPY",p];
   zz=Table[0,{npar}];
+
+  !xx=beam[[2,1]]+Twiss["DX",p];
+  !px=Table[0,{npar}]+Twiss["DPX",p];
+  !yy=beam[[2,3]]+Twiss["DY",p]; 
+  !py=Table[0,{npar}]+Twiss["DPY",p];
+  !zz=Table[0,{npar}];
 
   {w,de,{beam[[1]],{xx,px,yy,py,zz,de,beam[[2,7]]}}}  
 
