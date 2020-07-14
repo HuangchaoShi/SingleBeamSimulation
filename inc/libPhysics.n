@@ -133,7 +133,7 @@ BremsScat[beam_,minu_:0.01]:=Module[{delta,de,tmp},
   w=delta*XSectionB[#]&/@u;
   de=beam[[2,6]]-u;
   
-  tmp=If[#[[1]]<-0.98,{0,0},#]&/@Thread[{de,w}];
+  tmp=If[#[[1]]<-0.98||#[[1]]>0.98,{0,0},#]&/@Thread[{de,w}];
   de=tmp[[,1]];
   w=tmp[[,2]];
 
