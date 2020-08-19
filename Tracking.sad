@@ -33,8 +33,8 @@ bl=DeleteSOL[];
 (* Set Aperture *)
 ap=SetApert[];
 apposi=SetApertSize[];
-!Allposi=LINE["POSITION"];
-!PrintApert[Allposi];
+Allposi=LINE["POSITION"];
+PrintApert[Allposi];
 
 (* Observation point *)
 pobs=LINE["POSITION","AP.*|*BPM*"];

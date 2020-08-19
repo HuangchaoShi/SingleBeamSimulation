@@ -122,7 +122,7 @@ XSectionB[u_]:=Module[{alpha=1/137},
   ];
 
 BremsScat[beam_,minu_:0.01]:=Module[{delta},
-  maxu=0.98
+  maxu=0.98;
   npar=Length[beam[[2,7]]];
   u=minu+(maxu-minu)*Random[npar];
   delta=(maxu-minu)/npar;
