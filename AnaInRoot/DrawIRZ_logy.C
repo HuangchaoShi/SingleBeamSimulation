@@ -1,16 +1,14 @@
 #include"/hepustc/home/shihc/workarea/headfile/bes3plotstyle.c"
-#include"/ustcfs/bes3user/2017/shihc/MDIforSTCF/SingleBeamSimulation/AnaInRoot/ApertSet.C"
 #include <TCanvas.h>
 #include "TTree.h"
 #include "TLegend.h"
 #include <iostream>
 #include <fstream>
 using namespace std;
-using namespace TMath;
 
-void DrawIRZ(){
-  //SetPrelimStyle();
-  //SetStyle();
+void DrawIRZ_logy(){
+  SetPrelimStyle();
+  SetStyle();
   gStyle->SetOptStat(0);
   gStyle->SetFrameLineWidth(3);
 
@@ -20,14 +18,21 @@ void DrawIRZ(){
   TTree *Coultree = (TTree*) fileTracking->Get("Coul");
   TTree *Bremtree = (TTree*) fileTracking->Get("Brem");
 
-  double xmin=-4,xmax=4,ymax=1.5e7;
+  double xmin=-4,xmax=4,ymax=2e7;
   int nbin=100;
   TH1F *fIRZ_tous = new TH1F("fIRZ_tous","",nbin,xmin,xmax);
   TH1F *fIRZ_coul = new TH1F("fIRZ_coul","",nbin,xmin,xmax);
   TH1F *fIRZ_brem = new TH1F("fIRZ_brem","",nbin,xmin,xmax); 
-  fIRZ_tous->SetFillColor(kRed);
-  fIRZ_coul->SetFillColor(kGreen);
-  fIRZ_brem->SetFillColor(kMagenta);
+  fIRZ_tous->SetMarkerColor(kRed);
+  fIRZ_coul->SetMarkerColor(kGreen);
+  fIRZ_brem->SetMarkerColor(kBlue);
+  fIRZ_tous->SetMarkerStyle(5);
+  fIRZ_coul->SetMarkerStyle(26);
+  fIRZ_brem->SetMarkerStyle(4);
+  fIRZ_tous->SetMarkerSize(1.5);
+  fIRZ_coul->SetMarkerSize(1.5);
+  fIRZ_brem->SetMarkerSize(1.5);
+
   fIRZ_tous->SetXTitle("Z position /m");
   fIRZ_tous->SetYTitle("Lost rate / Hz"); 
   fIRZ_tous->GetYaxis()->SetRangeUser(0,ymax);
@@ -88,62 +93,28 @@ void DrawIRZ(){
   }
    
   TCanvas *c1 = new TCanvas("c1");
-  THStack *hs_all = new THStack("hs_all","");
-  hs_all->Add(fIRZ_tous);
-  hs_all->Add(fIRZ_coul);
-  hs_all->Add(fIRZ_brem);
 
-  TLegend *leg1 =new TLegend(0.2,0.65,0.55,0.85);
-  leg1->SetFillColor(0);
-  leg1->SetBorderSize(0);
-  leg1->SetTextSize(0.03);
-  leg1->AddEntry(fIRZ_tous,"Touschek","f");
-  leg1->AddEntry(fIRZ_coul,"Coulomb","f");
-  leg1->AddEntry(fIRZ_brem,"Bremsstrahlung","f");
-
-  fIRZ_tous->Draw("HIST"); 
-  hs_all->Draw("sameHIST");
-  leg1->Draw();
-
-  //draw apert
-  double Vs[401],Vrx[401],Vry[401],Vdx[401];
-  double rx,ry,dx;
-  int i=0;
-  double yApertmax=0.1;
-  double scale = ymax/yApertmax;
-  for(double s1=-4;s1<=4;s1=s1+0.02){
-    ApertSet(fabs(s1),rx,ry,dx);
-    Vs[i]=s1;
-    Vrx[i]=rx*scale;
-    Vry[i]=ry*scale;
-    Vdx[i]=dx*scale;
-    i++;
+  double step=(xmax-xmin)/nbin;
+  for(double m=xmin+step/2;m<xmax;m=m+step){
+    fIRZ_tous->Fill(m,1);
+    fIRZ_coul->Fill(m,1);
+    fIRZ_brem->Fill(m,1);
   }
-  TGraph* g1 = new TGraph(i,Vs,Vrx);
-  TGraph* g2 = new TGraph(i,Vs,Vry);
-  TGraph* g3 = new TGraph(i,Vs,Vdx);
-  g1->GetYaxis()->SetRangeUser(0,yApertmax);
-  g1->SetLineColor(kBlue);
-  g2->SetLineColor(kCyan);
-  g3->SetLineColor(kYellow);
-  int linesize=2;
-  g1->SetLineWidth(linesize);
-  g2->SetLineWidth(linesize);
-  g3->SetLineWidth(linesize);
-  g1->Draw("same");
-  g2->Draw("same");
-  g3->Draw("same");
-  TGaxis *axis = new TGaxis(4,0,4,ymax,0,yApertmax,510,"+L");
-  axis->SetTitle("Aperture Size/m");
-  axis->Draw();
-  TLegend *leg2 =new TLegend(0.6,0.65,0.9,0.85);
-  leg2->SetFillColor(0);
-  leg2->SetBorderSize(0);
-  leg2->SetTextSize(0.04);
-  leg2->AddEntry(g1,"r_{x}","l");
-  leg2->AddEntry(g2,"r_{y}","l");
-  leg2->AddEntry(g3,"d_{x}","l");
-  leg2->Draw();
+  fIRZ_tous->GetYaxis()->SetRangeUser(1,ymax);
+  gPad->SetLogy();
 
-  c1->Print("Drawings/Zloss.eps");
+  TLegend *leg =new TLegend(0.2,0.65,0.55,0.9);
+  leg->SetFillColor(0);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.06);
+  leg->AddEntry(fIRZ_tous,"Touschek","p");
+  leg->AddEntry(fIRZ_coul,"Coulomb","p");
+  leg->AddEntry(fIRZ_brem,"Bremsstrahlung","p");
+
+  fIRZ_tous->Draw("E"); 
+  fIRZ_coul->Draw("Esame");
+  fIRZ_brem->Draw("Esame");
+  leg->Draw();
+
+  c1->Print("Drawings/Zloss_logy.eps");
 }
