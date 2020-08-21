@@ -42,7 +42,7 @@ PrintLostInfo[proc_,dN_,dX_,pscat_,beam2_,DisIP_,file1_]:=Module[{},
     If[ dX[[i]]==0||beam2[[2,7,i]]==1,Continue[] ];
     If[beam2[[2,2,i]]=="NaN"||beam2[[2,2,i]]=="INF"||beam2[[2,4,i]]=="NaN"||beam2[[2,4,i]]=="INF",Continue[] ];   
 
-    Write[file1, dN[[i]],"	",dX[[i]],"	",LINE["S",pscat],"	",beam2[[2,1,i]],"	",beam2[[2,2,i]],"	",beam2[[2,3,i]],"	",beam2[[2,4,i]],"	",DisIP[[i]],"	",beam2[[2,6,i]],"	",beam2[[2,9,i]] ]; 
+    Write[file1, dN[[i]],"	",dX[[i]],"	",LINE["S",pscat],"	",beam2[[2,1,i]],"	",beam2[[2,2,i]],"	",beam2[[2,3,i]],"	",beam2[[2,4,i]],"	",DisIP[[i]],"	",beam2[[2,6,i]],"      ",beam2[[2,9,i]] ]; 
 
   ,{i,1,Length[dN]}]; 
 ];

@@ -61,6 +61,7 @@ TouscScat[beam_,npar_,emitxfile_:Null,emityfile_:Null,Lbunchfile_:Null,sigEfile_
   de=gamma*qn*Cos[theta]*sign;
   !Print["w:"//w//"; de:"//de//"qn:"//qn];  
 
+  !if |de|>0.98 delete this event
   tmp=If[#[[1]]<-0.98||#[[1]]>0.98,{0,0},#]&/@Thread[{de,w}];
   de=tmp[[,1]];
   w=tmp[[,2]];
@@ -126,10 +127,15 @@ XSectionB[u_]:=Module[{alpha=1/137},
   4*alpha*re^2*((4/3/u-4/3+u)*(Z^(2)Log[183/Z^(1/3)]+Z*Log[1194/Z^(2/3)])+Z*(Z+1)/9*(1-u))
   ];
 
+<<<<<<< HEAD
+BremsScat[beam_,minu_:0.01]:=Module[{delta},
+  maxu=0.98;
+=======
 BremsScat[beam_,minu_:0.01]:=Module[{delta,de,tmp},
+>>>>>>> 89a0d269083ba0e1b02be176d5a10a345be36f52
   npar=Length[beam[[2,7]]];
-  u=minu+(1-minu)*Random[npar];
-  delta=(1-minu)/npar;
+  u=minu+(maxu-minu)*Random[npar];
+  delta=(maxu-minu)/npar;
   w=delta*XSectionB[#]&/@u;
   de=beam[[2,6]]-u;
   

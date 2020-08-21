@@ -58,7 +58,7 @@ mat2scat=TransferMatrices/.Emittance[Matrix->True];
 (* Generate *)
 !region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
 npar=100;
-maxturns=100;
+maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
 proc="B";
@@ -80,6 +80,7 @@ If[proc=="B",
 
 fileTracking=OpenWrite[filename];
 
+Print["stattering points:"//nscat];
 (* Loop for pscat *)
 Do[
   beam=MoveScatPoint[beam0,pscat[[iscat]]];
