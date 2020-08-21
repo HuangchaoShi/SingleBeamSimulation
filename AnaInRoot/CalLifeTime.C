@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
+const double IRlength=2.5;
 
 double ReadNtotal(TString filename){
   ifstream file1(filename);
@@ -24,7 +25,7 @@ double ReadNIR(TString filename,int Zmin,int Zmax){
     file1>>dN>>dX>>Z0>>x>>px>>y>>py>>Z>>dE>>nturn;
     if(nturn==1001) continue;
     //if(dN>1e8) cout<<dN<<";"<<dX<<";"<<Z0<<";"<<Z<<";"<<nturn<<endl;
-    if(Z>4||Z<-4) continue;
+    if(fabs(Z)>IRlength) continue;
     NIR+=dN;
   }
   return NIR;
@@ -37,8 +38,9 @@ double ReadEvtIR(TString filename,int Zmin,int Zmax){
   while(!file1.eof()){
     file1>>dN>>dX>>Z0>>x>>px>>y>>py>>Z>>dE>>nturn;
     if(nturn==1001) continue;
-    if(Z>4||Z<-4) continue;
-    if(dN<0.01) continue;
+    //if(Z>4||Z<-4) continue;
+    if(fabs(Z)>IRlength) continue;
+    //if(dN<0.01) continue;
     EvtIR++;
     }
     return EvtIR;
