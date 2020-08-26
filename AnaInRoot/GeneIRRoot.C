@@ -5,6 +5,7 @@ using namespace std;
 
 void Gene(int i,int nfile){
   TFile *newfile = new TFile(Form("rootfiles/Tracking_%d.root",i),"recreate");
+  double IRlength=4;// (-IRlength,IRlength)
 
   //-----touschek-------
   double dN_tous,dX_tous,Z0_tous,x_tous,px_tous,y_tous,py_tous,Z_tous,dE_tous,nturn_tous;
@@ -25,7 +26,7 @@ void Gene(int i,int nfile){
   ifstream file_tous(filename_tous);
   while(!file_tous.eof()){
     file_tous>>dN_tous>>dX_tous>>Z0_tous>>x_tous>>px_tous>>y_tous>>py_tous>>Z_tous>>dE_tous>>nturn_tous;
-    if(nturn_tous==1001||Z_tous<-4||Z_tous>4) continue;
+    if(nturn_tous==1001||Z_tous<(-1*IRlength)||Z_tous>IRlength) continue;
     dN_tous=dN_tous/nfile;
     newtree_tous->GetEntry(Nid_tous);
     newtree_tous->Fill();
@@ -55,7 +56,7 @@ void Gene(int i,int nfile){
   while(!file_brem.eof()){
     file_brem>>dN_brem>>dX_brem>>Z0_brem>>x_brem>>px_brem>>y_brem>>py_brem>>Z_brem>>dE_brem>>nturn_brem;
     if(dE_brem<=-1||dE_brem>1||px_brem>1)  continue;
-    if(nturn_brem==1001||Z_brem<-4||Z_brem>4) continue;
+    if(nturn_brem==1001||Z_brem<(-1*IRlength)||Z_brem>IRlength) continue;
     dN_brem=dN_brem/nfile;
     newtree_brem->GetEntry(Nid_brem);
     newtree_brem->Fill();
@@ -84,7 +85,7 @@ void Gene(int i,int nfile){
   ifstream file_coul(filename_coul);
   while(!file_coul.eof()){
     file_coul>>dN_coul>>dX_coul>>Z0_coul>>x_coul>>px_coul>>y_coul>>py_coul>>Z_coul>>dE_coul>>nturn_coul;
-    if(nturn_coul==1001||Z_coul<-4||Z_coul>4) continue;
+    if(nturn_coul==1001||Z_coul<(-1*IRlength)||Z_coul>IRlength) continue;
     dN_coul=dN_coul/nfile;
     newtree_coul->GetEntry(Nid_coul);
     newtree_coul->Fill();

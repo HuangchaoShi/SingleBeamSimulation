@@ -139,7 +139,7 @@ XSectionB[u_]:=Module[{alpha=1/137},
   de=tmp[[,1]];
   w=tmp[[,2]];
 
-  {w,-u,{beam[[1]],{beam[[2,1]],beam[[2,2]],beam[[2,3]],beam[[2,4]],beam[[2,5]],de,beam[[2,7]]}}}
+  {w,u,{beam[[1]],{beam[[2,1]],beam[[2,2]],beam[[2,3]],beam[[2,4]],beam[[2,5]],de,beam[[2,7]]}}}
   ];
 
 XSectionC[theta_]:=Module[{},
