@@ -1,5 +1,5 @@
  LINE RING=  ( 
- IP1                
+ IP                
  ESOL000
  EDSOL001  ESOL001 
  EDSOL002  ESOL002 
@@ -800,7 +800,7 @@
  WSOL002  WDSOL002  
  WSOL001  WDSOL001  
  WSOL000
- IP1              
+ IP              
  );
    
 MOMENTUM=1548000000;

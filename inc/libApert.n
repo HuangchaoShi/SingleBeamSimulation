@@ -30,9 +30,9 @@ SetApertSize[]:=Module[{},
   APposi=LINE["POSITION","AP.*"];
   APS=LINE["S","AP.*"];
   Ltotal=237.5314;
-  If[LINE["S","IP1"]==0, 
+  If[LINE["S","IP"]==0, 
     APDisIP=Min[#,Ltotal-#]&/@APS,
-    APDisIP=Abs[#-LINE["S","IP1"]]&/@APS
+    APDisIP=Abs[#-LINE["S","IP"]]&/@APS
   ];  
 
   Do[

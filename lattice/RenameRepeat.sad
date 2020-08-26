@@ -1,0 +1,80 @@
+!用于把lattice中重复的元件改写为"base"R"num"的形式，如FD1R2,目前包括对drift, quad, bend的改写
+
+FFS;
+latticeFile="STCF.sad";
+GetMAIN[latticeFile];
+
+USE totalring;
+CELL;
+CALC;
+
+Allposi=LINE["POSITION"];
+AllNames=LINE["NAME",Allposi];
+Print[AllNames];
+LengthEle=LINE["S",Drop[Allposi,1]]-LINE["S",Drop[Allposi,-1]];
+LengthEle=PrependTo[lobs,LINE["S",Allposi[[1]]] ];
+
+LastIndexOfBaseName[name_]:=Module[{i},
+  dotPositions = StringPosition[name, "."];
+  i = Switch[Length[dotPositions],
+    1, -1+dotPositions[[-1, 1]],
+    0, -1
+    ];
+  i
+];
+
+fileNewName="STCFnoRepeat.sad";
+fileNew=OpenWrite[fileNewName];
+NewLine={};
+QuadName={};QuadK1={};QuadL={};
+DriftName={};DriftL={};
+BendName={};BendL={};BendANGLE={};BendAE1={};BendAE2={};
+Do[
+  BaseId=LastIndexOfBaseName[ AllNames[[i]] ];
+  If[(BaseId==-1),
+    AppendTo[NewLine,AllNames[[i]] ];
+    Continue[];
+  ]; 
+
+  TypeName=LINE["TYPENAME",Allposi[[i]] ];
+  NameLength=StringLength[AllNames[[i]] ];
+  NewName=(AllNames[[i]][1,BaseId]//"R"//AllNames[[i]][BaseId+2 ,NameLength]);
+  AppendTo[NewLine, NewName];
+  If[(TypeName=="QUAD"),
+    AppendTo[QuadName, NewName];
+    AppendTo[QuadK1 ,LINE["K1",Allposi[[i]]] ];
+    AppendTo[QuadL,  LengthEle[[i]] ]; 
+  ];
+  If[(TypeName=="DRIFT"),
+    AppendTo[DriftName,NewName];
+    AppendTo[DriftL,LengthEle[[i]] ]; 
+  ]; 
+  If[(TypeName=="BEND"),
+    AppendTo[BendName,NewName];
+    AppendTo[BendL, LengthEle[[i]] ];
+    AppendTo[BendANGLE, LINE["ANGLE",Allposi[[i]] ] ];
+    AppendTo[BendAE1, LINE["AE1",Allposi[[i]] ] ];
+    AppendTo[BendAE2, LINE["AE2",Allposi[[i]] ] ];
+  ];
+,{i,1,Length[AllNames]} ];
+
+Write[fileNew,"; DRIFT"];
+Do[ Write[fileNew,DriftName[[i]],"=(L=",DriftL[[i]],")"];
+,{i,1,Length[DriftName] }];
+
+Write[fileNew,"; QUAD"];
+Do[ Write[fileNew,QuadName[[i]],"=(L=",QuadL[[i]]," K1=",QuadK1[[i]],")"]; 
+,{i,1,Length[QuadName] }];
+
+Write[fileNew,"; BEND"];
+Do[ Write[fileNew,BendName[[i]],"=(L=",BendL[[i]]," ANGLE=",BendANGLE[[i]]," AE1=",BendAE1[[i]]," AE2=",BendAE2[[i]],")"];
+,{i,1,Length[BendName]}];
+
+Write[fileNew,"; LINE"];
+Write[fileNew,"STCFNoRepeat=("];
+Do[ Write[fileNew,NewLine[[i]] ];
+,{i,1,Length[NewLine]-1}]
+Write[fileNew,");"];
+
+Close[fileNew];
+Exit[];

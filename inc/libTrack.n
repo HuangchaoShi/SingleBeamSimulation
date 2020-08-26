@@ -148,7 +148,7 @@ CalLostNumber[proc_,w_,beamCurrent_,bunchNum_,lscat_,circum_,pgas_]:=Module[{dN}
 
 LostDisFromIP[beam2_,circum_]:=Module[{DisFromIP},
   LostS=If[#==0,0,LINE["S",#]]&/@beam2[[2,8]];
-  If[LINE["S","IP1"]==0,
+  If[LINE["S","IP"]==0,
     DisFromIP=If[#<(circum-#),#,#-circum]&/@LostS,
     DisFromIP=LostS-circum
   ];

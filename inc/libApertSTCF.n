@@ -30,9 +30,9 @@ SetApertSize[]:=Module[{},
   APposi=LINE["POSITION","AP.*"];
   APS=LINE["S","AP.*"];
   Ltotal=237.5314;
-  If[LINE["S","IP1"]==0, 
+  If[LINE["S","IP"]==0, 
     APDisIP=Min[#,Ltotal-#]&/@APS,
-    APDisIP=Abs[#-LINE["S","IP1"]]&/@APS
+    APDisIP=Abs[#-LINE["S","IP"]]&/@APS
   ];  
 
   Do[
@@ -64,12 +64,17 @@ PrintApert[APposi_]:=Module[{},
   APAX=LINE["AX",APposi];
   APAY=LINE["AY",APposi];
   APDX=LINE["DX",APposi];
-  APBeta=Twiss["BX",APposi];
+  APBetaX=Twiss["BX",APposi];
+  APBetaY=Twiss["BY",APposi];
+  APAX=Twiss["AX",APposi];
   APTYPE=LINE["TYPENAME",APposi];  
+  lscat=LINE["S",Drop[APposi,1]]-LINE["S",Drop[APposi,-1]];
+  lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",APposi[[-1]]]+LINE["S",APposi[[1]]]];
 
   Write[fileApert,"Name	posi	type	S	AX	AY	DX	beta"]; 
   Do[
-    Write[fileApert,APName[[i]],"	",APposi[[i]],"	",APTYPE[[i]],"	",APS[[i]],"	",APAX[[i]],"	",APAY[[i]],"	",APDX[[i]],"	",APBeta[[i]]];
+!    Write[fileApert,APName[[i]],"	",APposi[[i]],"	",APTYPE[[i]],"	",APS[[i]],"	",APAX[[i]],"	",APAY[[i]],"	",APDX[[i]],"	",APBeta[[i]]];
+  Write[fileApert,APName[[i]],"      ",APposi[[i]]," ",APTYPE[[i]]," ",APS[[i]],"    ",lscat[[i]],"	",APBetaX[[i]],"	",APBetaY[[i]]];
   ,{i,1,Length[APposi]}];
   Close[fileApert];
 ];

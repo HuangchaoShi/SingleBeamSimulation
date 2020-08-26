@@ -6,13 +6,15 @@ If[?LOSSMAP<=>1,FFS["ABORT"]];
 
 Get["inc/libTrack.n"];
 Get["inc/libPhysics.n"];
-Get["inc/libApert.n"];
+Get["inc/libApertSTCF.n"];
 Get["inc/libRecord.n"];
+Get["inc/slice.n"];
 
-latticeFile="BEPCII.sad";
+latticeFile="lattice/STCF.sad";
 GetMAIN[latticeFile];
+GetMAIN["lattice/STCFnoRepeat.sad"];
 
-USE RING;
+USE STCFNoRepeat;
 CELL;
 CALC;
 
@@ -24,17 +26,20 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
-Get["Para_BEPC.txt"];
+!Get["lattice/Para_BEPC.txt"];
+Get["lattice/Para_STCF.txt"];
 
 (* adjust beamline *)
-bl=DeleteSOL[];
+!bl=DeleteSOL[];
 !ChangeInitalPoint[];
+Slice[6,0.02];
+Slice[40,0.5];
 
 (* Set Aperture *)
 ap=SetApert[];
 apposi=SetApertSize[];
-!Allposi=LINE["POSITION"];
-!PrintApert[Allposi];
+Allposi=LINE["POSITION"];
+PrintApert[Allposi];
 
 (* Observation point *)
 pobs=LINE["POSITION","AP.*|*BPM*"];
@@ -61,21 +66,21 @@ npar=100;
 maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
-proc="B";
+proc="C";
 !nscat=3;
 
 If[proc=="T", 
-  filename="output/TousTracking.txt";
+  filename="output/STCFTousTracking.txt";
 ];
 
 If[proc=="C",
   thetamax=15*Pi/180;  !theta max cut off
-  filename="output/CoulTracking.txt";
+  filename="output/STCFCoulTracking.txt";
 ];
 
 If[proc=="B",
   minu=6.8e-3;
-  filename="output/BremTracking.txt";
+  filename="output/STCFBremTracking.txt";
 ];
 
 fileTracking=OpenWrite[filename];
