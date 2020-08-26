@@ -1188,7 +1188,7 @@ MARK MFF1=()
 ;
 
  LINE RING=  ( 
- IP                
+ IP               
  ESOL000
  EDSOL001  ESOL001 
  EDSOL002  ESOL002 

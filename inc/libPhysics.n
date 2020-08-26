@@ -59,7 +59,7 @@ TouscScat[beam_,npar_,emitxfile_:Null,emityfile_:Null,Lbunchfile_:Null,sigEfile_
 
   sign=If[#>0.5,1,-1]&/@Random[npar];
   de=gamma*qn*Cos[theta]*sign;
-  !Print["w:"//w//"; de:"//de//"qn:"//qn];  
+  Print["w:"//w//"; de:"//de//"qn:"//qn];  
 
   !if |de|>0.98 delete this event
   tmp=If[#[[1]]<-0.98||#[[1]]>0.98,{0,0},#]&/@Thread[{de,w}];

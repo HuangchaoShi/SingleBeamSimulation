@@ -52,6 +52,7 @@ pscat=Select[LINE["POSITION"],(LINE["L",#]>0)&];
 nscat=Length[pscat];
 lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
 lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
+Print[lscat];
 
 FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
@@ -61,13 +62,15 @@ emit=Emittance[];
 mat2scat=TransferMatrices/.Emittance[Matrix->True];
 
 (* Generate *)
-!region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
-npar=100;
+Module[{argp, argv = $GetCommandLine[]},
+    If[Length[argv]==4,
+    proc=argv[[3]]; npar=ToExpression[ argv[[4]] ];
+    , proc="T";npar=3;];
+];
 maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
-proc="C";
-!nscat=3;
+nscat=3;
 
 If[proc=="T", 
   filename="output/STCFTousTracking.txt";
@@ -101,16 +104,19 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
+  beam1={10,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
-  dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
+Print[beam2];
+  !dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
 
-  DisIP=LostDisFromIP[beam2,circum];
+  !DisIP=LostDisFromIP[beam2,circum];
 
-  PrintLostInfo[proc,dN,dX,pscat[[iscat]],beam2,DisIP,fileTracking]; 
+  !PrintLostInfo[proc,dN,dX,pscat[[iscat]],beam2,DisIP,fileTracking]; 
   ,{iscat,1,nscat}];
 
 Close[fileTracking];
 
-Exit[];
+!Exit[];
+
 
 
