@@ -1,7 +1,6 @@
 !BEPCII parameters
 E0 = 2;  !beam energy (GeV)
-!circum = 740.1754;  !Circumference(m)
-circum = 237.5314; !use BEPCII lattice now
+circum = 740.1754;  !Circumference(m)
 
 beamCurrent = 2;  !(A)
 bunchCurrent = 6.7e-3;  !(A)

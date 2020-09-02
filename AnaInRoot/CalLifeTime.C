@@ -10,7 +10,7 @@ double ReadNtotal(TString filename){
   while(!file1.eof()){
     file1>>dN>>dX>>Z0>>x>>px>>y>>py>>Z>>dE>>nturn;
     if(nturn==1001) continue;
-    //if(dN>1e8) cout<<dN<<";"<<dX<<";"<<Z0<<";"<<Z<<";"<<nturn<<endl;
+    if(dN>2e6) cout<<dN<<";"<<dX<<";"<<Z0<<";"<<Z<<";"<<nturn<<endl;
     
     Ntotal+=dN; 
   } 

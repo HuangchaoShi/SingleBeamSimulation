@@ -137,8 +137,8 @@ CalLostNumber[proc_,w_,beamCurrent_,bunchNum_,lscat_,circum_,pgas_]:=Module[{dN}
   If[proc=="T",
     Nbunch=Nbeam/bunchNum;
     inverTau=w*SpeedOfLight*Nbunch*lscat/circum;
-    Print["w:"//w//" ;lscat:"//lscat//" ;circum:"//circum];
-    Print["Nbunch:"//Nbunch//" ; inverTau"//inverTau];
+    !Print["w:"//w//" ;lscat:"//lscat//" ;circum:"//circum];
+    !Print["Nbunch:"//Nbunch//" ; inverTau"//inverTau];
   ];
   If[proc=="C"||proc=="B",
     Ngas=ng[pgas];
