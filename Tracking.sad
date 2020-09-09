@@ -70,7 +70,7 @@ Module[{argp, argv = $GetCommandLine[]},
 maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
-nscat=3;
+!nscat=3;
 
 If[proc=="T", 
   filename="output/STCFTousTracking.txt";
@@ -104,14 +104,12 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
-  beam1={10,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
-Print[beam2];
-  !dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
+  dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
 
-  !DisIP=LostDisFromIP[beam2,circum];
+  DisIP=LostDisFromIP[beam2,circum];
 
-  !PrintLostInfo[proc,dN,dX,pscat[[iscat]],beam2,DisIP,fileTracking]; 
+  PrintLostInfo[proc,dN,dX,pscat[[iscat]],beam2,DisIP,fileTracking]; 
   ,{iscat,1,nscat}];
 
 Close[fileTracking];
