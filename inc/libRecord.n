@@ -2,36 +2,62 @@
 
 PrintTousGeneInfo[beam1_,w_,de_,file1_,file2_,iscat_]:=Module[{},
   wSum=0;
-  Do[wSum=wSum+w[[i]],{i,1,Length[w]}];
+  Do[
+    If[ de[[i]]<-0.0068||de[[i]]>0.0068,
+      wSum=wSum+w[[i]] 
+    ];
+  ,{i,1,Length[w]}];
+
   sscat=LINE["S",beam1[[1]] ];
   Write[file1,wSum," ",sscat," ",lscat[[iscat]] ];
 
   Do[
-    Write[file2,w[[i]]," ",de[[i]]];
+    If[ de[[i]]<-0.0068||de[[i]]>0.0068,
+      Write[file2,w[[i]]," ",de[[i]]];
+    ];
   ,{i,1,Length[w]}];
 
 ];
 
-PrintCoulGeneInfo[beam1_,w_,theta_,file1_,file2_,iscat_]:=Module[{},
+PrintCoulGeneInfo[beam1_,w_,theta_,file1_,file2_,iscat_]:=Module[{Posi,bY,HY,betaYmax,thetaYmin},
   wSum=0;
-  Do[wSum=wSum+w[[i]],{i,1,Length[w]}];
+  HY=0.014;
+  betaYmax=1688;
+  Posi=beam1[[1]];
+  bY=Twiss["BY",Posi];
+  thetaYmin=HY/Sqrt[bY*betaYmax];
+  !Print["thetaYmin:",thetaYmin];
+  
+  Do[
+    If[ theta[[i]]>thetaYmin,
+      wSum=wSum+w[[i]];
+    ];
+  ,{i,1,Length[w]}];
   sscat=LINE["S",beam1[[1]] ];
   Write[file1,wSum," ",sscat," ",lscat[[iscat]] ];
  
   Do[
+    If[ theta[[i]]>thetaYmin,
     Write[file2,w[[i]]," ",theta[[i]]];
+    ];
   ,{i,1,Length[w]}]; 
 
 ];
 
 PrintBremGeneInfo[beam1_,w_,de_,file1_,file2_,iscat_]:=Module[{},
   wSum=0;
-  Do[wSum=wSum+w[[i]],{i,1,Length[w]}];
+  Do[
+    If[ de[[i]]<-0.0068,
+      wSum=wSum+w[[i]];
+    ];
+  ,{i,1,Length[w]}];
   sscat=LINE["S",beam1[[1]] ];
   Write[file1,wSum," ",sscat," ",lscat[[iscat]] ];
 
   Do[
-    Write[file2,w[[i]]," ",de[[i]]];
+    If[ de[[i]]>0.0068,
+      Write[file2,w[[i]]," ",de[[i]]];
+    ];
   ,{i,1,Length[w]}];
 
 ];

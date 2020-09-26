@@ -6,12 +6,19 @@ If[?LOSSMAP<=>1,FFS["ABORT"]];
 
 Get["inc/libTrack.n"];
 Get["inc/libPhysics.n"];
-Get["inc/libApert.n"];
+!Get["inc/libApert.n"];
+Get["inc/libApertSTCF.n"];
 Get["inc/libRecord.n"];
 
-latticeFile="BEPCII.sad";
+!latticeFile="BEPCII.sad";
+!GetMAIN[latticeFile];
+!USE RING;
+
+latticeFile="lattice/STCF.sad";
 GetMAIN[latticeFile];
-USE RING;
+GetMAIN["lattice/STCFnoRepeat.sad"];
+USE STCFNoRepeat;
+
 CELL;
 CALC;
 
@@ -23,9 +30,16 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
+!Get["lattice/Para_BEPC.txt"];
+Get["lattice/Para_STCF.txt"];
+
+(* adjust beamline *)
+bl=DeleteSOL[];
+!ChangeInitalPoint[];
+Slice[6,0.02];
+Slice[40,0.5];
 
 (* Set Aperture *)
-!ChangeInitalPoint[];
 ap=SetApert[];
 apposi=SetApertSize[];
 
@@ -40,26 +54,20 @@ pscat=Select[LINE["POSITION"],(LINE["L",#]>0)&];
 nscat=Length[pscat];
 lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
 lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
-Print[lscat[[nscat]]];
 
 FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
 
 (* Parameters *)
-Get["Para_BEPC.txt"];
 emit=Emittance[];
 mat2scat=TransferMatrices/.Emittance[Matrix->True];
 
 (* Generate *)
-geneSum={};
-lossSum={};
-accept={};
-lostParticles={};
 !region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
-npar=10000;
+npar=1000;
 
 beam0=GenParticles[npar, emitx, emity];
-proc="T";
+proc="C";
 !nscat=3;
 
 If[proc=="T", 
@@ -105,6 +113,6 @@ Do[
 Close[fileWsumto];
 Close[fileWto];
 
-Exit[];
+!Exit[];
 
 
