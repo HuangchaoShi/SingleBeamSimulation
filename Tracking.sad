@@ -74,7 +74,7 @@ Module[{argp, argv = $GetCommandLine[]},
 maxturns=1000;
 
 beam0=GenParticles[npar, emitx, emity];
-nscat=3;
+!nscat=3;
 
 If[proc=="T", 
   filename="output/STCFTousTracking.txt";
