@@ -18,7 +18,7 @@ void DrawIRdN(){
   TTree *Coultree = (TTree*) fileTracking->Get("Coul");
   TTree *Bremtree = (TTree*) fileTracking->Get("Brem");
 
-  double xmin=-8,xmax=5,ymax=2e4;
+  double xmin=-8,xmax=5,ymax=6e4;
   int nbin=100;
   TH1F *fIRdN_tous = new TH1F("fIRdN_tous","",nbin,xmin,xmax);
   TH1F *fIRdN_coul = new TH1F("fIRdN_coul","",nbin,xmin,xmax);

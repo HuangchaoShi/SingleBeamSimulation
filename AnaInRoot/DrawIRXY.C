@@ -60,7 +60,7 @@ void DrawIRXY(){
   Coultree->SetBranchAddress("nturn",&nturn_coul);
   for(Int_t icoul=0;icoul<ncoul;icoul++){
     Coultree->GetEntry(icoul);
-    if(fabs(Z_coul)>0.9) continue;
+//    if(fabs(Z_coul)>0.9) continue;
     fIRXY_coul->Fill(x_coul,y_coul,dN_coul);
   }
  
@@ -80,7 +80,7 @@ void DrawIRXY(){
 
   for(Int_t ibrem=0;ibrem<nbrem;ibrem++){
     Bremtree->GetEntry(ibrem);
-    if(fabs(Z_brem)>0.9) continue;
+//    if(fabs(Z_brem)>0.9) continue;
     fIRXY_brem->Fill(x_brem,y_brem,dN_brem);
   }
    

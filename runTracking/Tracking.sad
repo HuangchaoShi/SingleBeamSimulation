@@ -11,7 +11,7 @@ Get[StringJoin[PackageDir,"/inc/libPhysics.n"]];
 Get[StringJoin[PackageDir,"/inc/libApert.n"]];
 Get[StringJoin[PackageDir,"/inc/libRecord.n"]];
 
-latticeFile=StringJoin[PackageDir,"/BEPCII.sad"];
+latticeFile=StringJoin[PackageDir,"/lattice/BEPCII.sad"];
 GetMAIN[latticeFile];
 
 USE RING;
@@ -26,7 +26,7 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
-Get[StringJoin[PackageDir,"/Para_BEPC.txt"]];
+Get[StringJoin[PackageDir,"/lattice/Para_BEPC.txt"]];
 
 (* adjust beamline *)
 bl=DeleteSOL[];

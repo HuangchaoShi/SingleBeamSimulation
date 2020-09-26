@@ -4,7 +4,7 @@ LOSSMAP;
 Print["LOSSSMAP =",?LOSSMAP];
 If[?LOSSMAP<=>1,FFS["ABORT"]];
 
-Get["/home/shihc/ustcfs/MDIforSTCF/SingleBeamSimulation/runTracking/TrackingInit.sad"];
+Get["/home/shihc/ustcfs/MDIforSTCF/SingleBeamSimulation/runTracking_STCF/TrackingInit.sad"];
 
 Get[StringJoin[PackageDir,"/inc/libTrack.n"]];
 Get[StringJoin[PackageDir,"/inc/libPhysics.n"]];
@@ -29,7 +29,7 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
-Get[StringJoin[PackageDir,"/lattice/Para_STCF.txt"]];
+Get[StringJoin[PackageDir,"/lattice/Para_STCF0.txt"]];
 
 (* adjust beamline *)
 !bl=DeleteSOL[];
@@ -74,7 +74,7 @@ fileTracking=OpenWrite[filename];
 Do[
   beam=MoveScatPoint[beam0,pscat[[iscat]]];
   !dX means offset value: de for touschek and brems, dtheta for coulomb scattering
-  !Print["Scattering at:"//LINE["NAME",pscat[[iscat]]]//" "//LINE["POSITION",pscat[[iscat]]] ];
+  Print["Scattering at:"//LINE["NAME",pscat[[iscat]]]//" "//LINE["POSITION",pscat[[iscat]]] ];
 
   If[proc=="T",
     {w,dX,beam1}=TouscScat[beam,npar,emitx,emity,Lbunch,sigE];

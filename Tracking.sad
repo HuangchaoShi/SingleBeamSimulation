@@ -7,14 +7,19 @@ If[?LOSSMAP<=>1,FFS["ABORT"]];
 Get["inc/libTrack.n"];
 Get["inc/libPhysics.n"];
 Get["inc/libApertSTCF.n"];
+!Get["inc/libApert.n"];
 Get["inc/libRecord.n"];
 Get["inc/slice.n"];
 
 latticeFile="lattice/STCF.sad";
 GetMAIN[latticeFile];
 GetMAIN["lattice/STCFnoRepeat.sad"];
-
 USE STCFNoRepeat;
+
+!latticeFile="lattice/BEPCII.sad";
+!GetMAIN[latticeFile];
+!USE RING;
+
 CELL;
 CALC;
 
@@ -30,7 +35,7 @@ date0=DateString[];
 Get["lattice/Para_STCF.txt"];
 
 (* adjust beamline *)
-!bl=DeleteSOL[];
+bl=DeleteSOL[];
 !ChangeInitalPoint[];
 Slice[6,0.02];
 Slice[40,0.5];
@@ -52,7 +57,6 @@ pscat=Select[LINE["POSITION"],(LINE["L",#]>0)&];
 nscat=Length[pscat];
 lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
 lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
-Print[lscat];
 
 FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
@@ -104,6 +108,7 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
+  !beam1={10,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
   dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
 
