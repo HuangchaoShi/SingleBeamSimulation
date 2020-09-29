@@ -11,6 +11,9 @@ using namespace TMath;
 typedef std::vector<double> Vdouble;
 
 void DrawTousW(){
+  gStyle->SetOptStat(0);
+  gStyle->SetFrameLineWidth(3);
+
   double c_light=3e8;
   double charge_e=1.6e-19;
   //double bunch_current=9.8e-3; 
@@ -22,7 +25,8 @@ void DrawTousW(){
   double N_bunch = bunch_current*(circum/c_light)/charge_e;  
   double N_beam = num_bunch*N_bunch;
   //double dEmin = 6.8e-3; 
-  double n_scat = 662;
+  double n_scat = 1750;
+  double NinScat = 30000;
 cout<<"particle number in a bunch:"<<N_bunch<<endl;
 
   ifstream file_W(Form("../output/TousWtodE.txt"));
@@ -33,7 +37,7 @@ cout<<"particle number in a bunch:"<<N_bunch<<endl;
     file_W>>w>>dE;
   //  if(dE<dEmin) continue;
     VdE.push_back(dE);
-    VN.push_back(w*c_light*N_bunch*2);
+    VN.push_back(w*c_light*N_bunch*2*NinScat);
 //cout<<VN[i]<<endl;
     tau=tau+VN[i];
     i++;
@@ -51,6 +55,9 @@ cout<<"particle number in a bunch:"<<N_bunch<<endl;
   for(i=0;i<n_total;i++){
     h1->Fill(VdE[i],VN[i]);
   }
-  h1->Draw("F"); 
+
+  TCanvas *c1 = new TCanvas();
+  h1->Draw(); 
+  c1->Print("TousdEDis.eps");
 }
 
