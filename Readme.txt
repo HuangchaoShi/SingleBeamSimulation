@@ -1,4 +1,4 @@
-This is a new single background simulation package based on beast simulation from KEK. The generator and accelerator tracking will be performed by SAD.
+This is a new single background simulation package deveploed basing on beast simulation from KEK. The generator and accelerator tracking will be performed by SAD.
 
 runCompare: compare BEPC,STCF
 v1: STCF apert + BEPC lattice, parameter
