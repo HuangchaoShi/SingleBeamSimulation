@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-const double IRlength=2.5;
+const double IRlength=2.875;
 
 double ReadNtotal(TString filename){
   ifstream file1(filename);
@@ -10,7 +10,7 @@ double ReadNtotal(TString filename){
   while(!file1.eof()){
     file1>>dN>>dX>>Z0>>x>>px>>y>>py>>Z>>dE>>nturn;
     if(nturn==1001) continue;
-    if(dN>2e6) cout<<dN<<";"<<dX<<";"<<Z0<<";"<<Z<<";"<<nturn<<endl;
+    if(dN>2e6) cout<<"filename:"<<filename<<":  "<<dN<<";"<<dX<<";"<<Z0<<";"<<Z<<";"<<nturn<<endl;
     
     Ntotal+=dN; 
   } 
@@ -91,9 +91,9 @@ void CalLifeTime(){
   cout<<"Bremsstrahlung Loss rate: "<<NIRtotal_brem/1e6<<"MHz"<<endl;
   cout<<"Coulomb Loss rate: "<<NIRtotal_coul/1e6<<"MHz"<<endl;
 
-  cout<<"Touschek evt rate: "<<EvtIRtotal_tous<<endl;
-  cout<<"Bremsstrahlung evt rate: "<<EvtIRtotal_brem<<endl;
-  cout<<"Coulomb evt rate: "<<EvtIRtotal_coul<<endl;   
+//  cout<<"Touschek evt rate: "<<EvtIRtotal_tous<<endl;
+//  cout<<"Bremsstrahlung evt rate: "<<EvtIRtotal_brem<<endl;
+//  cout<<"Coulomb evt rate: "<<EvtIRtotal_coul<<endl;   
 
   exit();
 }

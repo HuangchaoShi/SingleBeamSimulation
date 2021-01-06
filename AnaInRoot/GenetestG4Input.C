@@ -5,10 +5,12 @@
 using namespace std;
 using namespace TMath;
 
-void GeneG4Input(){
+void GenetestG4Input(){
   double E0=1890,me=0.511; // MeV
   double p0=sqrt(E0*E0-me*me);
-  double theta,cost,sint;
+  double theta=0.011;
+  double cost=cos(theta);
+  double sint=sin(theta); 
 
   TFile *fileTracking = new TFile("rootfiles/all.root");
   TTree *toustree = (TTree*) fileTracking->Get("Tous");
@@ -17,10 +19,10 @@ void GeneG4Input(){
 
   bool bGeneElec = false;
   if(bGeneElec){
-  TFile *newfile = new TFile("G4Input/G4InputElec.root","recreate");
+  TFile *newfile = new TFile("G4Input/testSamples/test0Elec.root","recreate");
   }
   else{
-  TFile *newfile = new TFile("G4Input/G4InputPosi.root","recreate");
+  TFile *newfile = new TFile("G4Input/testSamples/test0Posi.root","recreate");
   }
   TTree *newtree_tous = new TTree("tous","new one");
   TTree *newtree_coul = new TTree("coul","new one");
@@ -48,13 +50,9 @@ void GeneG4Input(){
   Int_t ntous=toustree->GetEntries();
   for(Int_t itous=0;itous<ntous;itous++){
     toustree->GetEntry(itous);
-
-    if(fabs(z_tous)<0.909) theta=0.011;
-    else if(fabs(z_tous)<1.509) theta=0.0185;
-    else theta=0.026;
-    cost=cos(theta); sint=sin(theta); 
-
     dN_tousnew=dN_tous;
+    
+    //old transfer from acc coordinate to detector coordinate
     double px_cm=px_tous*p0;
     double py_cm=py_tous*p0;
     double pz_cm=(1+pz_tous)*p0;
@@ -62,7 +60,26 @@ void GeneG4Input(){
     py_tousnew = py_cm;
     pz_tousnew = -px_cm*sint+pz_cm*cost;
     E_tousnew=sqrt(px_tousnew*px_tousnew+py_tousnew*py_tousnew+pz_tousnew*pz_tousnew+me*me);
-    GetPosition(x_tous,y_tous,z_tous,x_tousnew,y_tousnew,z_tousnew);     
+/*
+    if(x_tous>0.0315) x_tousnew=0.0315;
+    else if(x_tous<-0.0315) x_tousnew=-0.0315;
+    else x_tousnew = x_tous;
+
+    if(y_tous>0.0315) y_tousnew=0.0315;
+    else if(y_tous<-0.0315) y_tousnew=-0.0315;
+    else y_tousnew = y_tous;
+*/
+    if(z_tous>2.8) z_tous=2.8;
+    else if(z_tous<-2.8) z_tous=-2.8;
+
+    px_tousnew = p0*sint;
+    py_tousnew = 0;
+    pz_tousnew = p0*cost;
+    E_tousnew = E0;
+    x_tousnew = z_tous*sint;
+    y_tousnew = 0;
+    z_tousnew = z_tous*cost;    
+
     //electron
     if(bGeneElec){
       pz_tousnew=-pz_tousnew;
@@ -97,11 +114,6 @@ void GeneG4Input(){
   Int_t ncoul=coultree->GetEntries();
   for(Int_t icoul=0;icoul<ncoul;icoul++){
     coultree->GetEntry(icoul);
-
-    if(fabs(z_coul)<0.909) theta=0.011;
-    else if(fabs(z_coul)<1.509) theta=0.0185;
-    else theta=0.026;
-
     dN_coulnew=dN_coul;
     double px_cm=px_coul*p0;
     double py_cm=py_coul*p0;
@@ -110,7 +122,27 @@ void GeneG4Input(){
     py_coulnew = py_cm;
     pz_coulnew = -px_cm*sint+pz_cm*cost;
     E_coulnew=sqrt(px_coulnew*px_coulnew+py_coulnew*py_coulnew+pz_coulnew*pz_coulnew+me*me);
-    GetPosition(x_coul,y_coul,z_coul,x_coulnew,y_coulnew,z_coulnew);
+/*
+    if(x_coul>0.0315) x_coulnew=0.0315;
+    else if(x_coul<-0.0315) x_coulnew=-0.0315;
+    else x_coulnew = x_coul;
+
+    if(y_coul>0.0315) y_coulnew=0.0315;
+    else if(y_coul<-0.0315) y_coulnew=-0.0315;
+    else y_coulnew = y_coul;
+*/
+    if(z_coul>2.8) z_coul=2.8;
+    else if(z_coul<-2.8) z_coul=-2.8;
+
+    px_coulnew = p0*sint;
+    py_coulnew = 0;
+    pz_coulnew = p0*cost;
+    E_coulnew = E0;
+    x_coulnew = z_coul*sint;
+    y_coulnew = 0;
+    z_coulnew = z_coul*cost;
+
+
     if(bGeneElec){
       pz_coulnew=-pz_coulnew;
       z_coulnew=-z_coulnew;
@@ -145,11 +177,6 @@ void GeneG4Input(){
   Int_t nbrem=bremtree->GetEntries();
   for(Int_t ibrem=0;ibrem<nbrem;ibrem++){
     bremtree->GetEntry(ibrem);
-
-    if(fabs(z_brem)<0.909) theta=0.011;
-    else if(fabs(z_brem)<1.509) theta=0.0185;
-    else theta=0.026;
-
     dN_bremnew=dN_brem;
     double px_cm=px_brem*p0;
     double py_cm=py_brem*p0;
@@ -158,7 +185,26 @@ void GeneG4Input(){
     py_bremnew = py_cm;
     pz_bremnew = -px_cm*sint+pz_cm*cost;
     E_bremnew=sqrt(px_bremnew*px_bremnew+py_bremnew*py_bremnew+pz_bremnew*pz_bremnew+me*me);
-    GetPosition(x_brem,y_brem,z_brem,x_bremnew,y_bremnew,z_bremnew);
+/*
+    if(x_brem>0.0315) x_bremnew=0.0315;
+    else if(x_brem<-0.0315) x_bremnew=-0.0315;
+    else x_bremnew = x_brem;
+
+    if(y_brem>0.0315) y_bremnew=0.0315;
+    else if(y_brem<-0.0315) y_bremnew=-0.0315;
+    else y_bremnew = y_brem;
+*/
+    if(z_brem>2.8) z_brem=2.8;
+    else if(z_brem<-2.8) z_brem=-2.8;
+   
+    px_bremnew = p0*sint;
+    py_bremnew = 0;
+    pz_bremnew = p0*cost;
+    E_bremnew = E0;
+    x_bremnew = z_brem*sint;
+    y_bremnew = 0;
+    z_bremnew = z_brem*cost;
+
     if(bGeneElec){
       pz_bremnew=-pz_bremnew;
       z_bremnew=-z_bremnew;

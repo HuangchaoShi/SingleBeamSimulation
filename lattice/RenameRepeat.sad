@@ -1,10 +1,11 @@
 !用于把lattice中重复的元件改写为"base"R"num"的形式，如FD1R2,目前包括对drift, quad, sext, bend的改写
 
 FFS;
-latticeFile="STCF_v1.sad";
+latticeFile="STCF_v0.sad";
 GetMAIN[latticeFile];
 
 USE totalring;
+!USE TOTALRING;
 CELL;
 CALC;
 
@@ -23,7 +24,7 @@ LastIndexOfBaseName[name_]:=Module[{i},
   i
 ];
 
-fileNewName="STCFnoRepeat_v1.sad";
+fileNewName="STCFnoRepeat_liutao_v1.sad";
 fileNew=OpenWrite[fileNewName];
 NewLine={};
 QuadName={};QuadK1={};QuadL={};

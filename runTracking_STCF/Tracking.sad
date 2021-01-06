@@ -8,22 +8,29 @@ Get["/home/shihc/ustcfs/MDIforSTCF/SingleBeamSimulation/runTracking_STCF/Trackin
 
 Get[StringJoin[PackageDir,"/inc/libTrack.n"]];
 Get[StringJoin[PackageDir,"/inc/libPhysics.n"]];
+!Get[StringJoin[PackageDir,"/inc/libApertSTCF.n"]];
 Get[StringJoin[PackageDir,"/inc/libApertSTCF.n"]];
 Get[StringJoin[PackageDir,"/inc/libRecord.n"]];
 Get[StringJoin[PackageDir,"/inc/slice.n"]];
 
-latticeFile1=StringJoin[PackageDir,"/lattice/STCF.sad"];
-latticeFile2=StringJoin[PackageDir,"/lattice/STCFnoRepeat.sad"];
-GetMAIN[latticeFile1];
-GetMAIN[latticeFile2];
+! lattice translated by shell
+!latticeFile1=StringJoin[PackageDir,"/lattice/STCF.sad"];
+!latticeFile2=StringJoin[PackageDir,"/lattice/STCFnoRepeat.sad"];
+!GetMAIN[latticeFile1];
+!GetMAIN[latticeFile2];
+!USE STCFNoRepeat;
 
-USE STCFNoRepeat;
+! lattice translated by liutao
+latticeFile=StringJoin[PackageDir,"/lattice/STCF_liutao_v1.sad"];
+GetMAIN[latticeFile];
+USE TOTALRING;
+
 CELL;
 CALC;
 
-RFSW;
-RAD;
-NOFLUC;
+!RFSW;
+!RAD;
+!NOFLUC;
 GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 
 (* Set parameters *)
@@ -40,8 +47,8 @@ Slice[40,0.5];
 (* Set Aperture *)
 ap=SetApert[];
 apposi=SetApertSize[];
-!Allposi=LINE["POSITION"];
-!PrintApert[Allposi];
+Allposi=LINE["POSITION"];
+PrintApert[Allposi];
 
 (* Observation point *)
 pobs=LINE["POSITION","AP.*|*BPM*"];
@@ -55,7 +62,7 @@ nscat=Length[pscat];
 lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
 lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
 
-FFS["RFSW RAD FLUC"];
+!FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
 
 (* Emit Parameters *)
@@ -85,9 +92,12 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
+  Print["generate"];
+  Print[beam1];
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
+  Print["tracking"];
   dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
-
+  Print["cal num"];
   DisIP=LostDisFromIP[beam2,circum];
 
   PrintLostInfo[proc,dN,dX,pscat[[iscat]],beam2,DisIP,fileTracking]; 

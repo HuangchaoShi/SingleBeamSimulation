@@ -5,7 +5,7 @@ using namespace std;
 
 void Gene(int i,int nfile){
   TFile *newfile = new TFile(Form("rootfiles/Tracking_%d.root",i),"recreate");
-  double IRlength=4;// (-IRlength,IRlength)
+  double IRlength=2.87;// (-IRlength,IRlength)
 
   //-----touschek-------
   double dN_tous,dX_tous,Z0_tous,x_tous,px_tous,y_tous,py_tous,Z_tous,dE_tous,nturn_tous;
@@ -26,6 +26,7 @@ void Gene(int i,int nfile){
   ifstream file_tous(filename_tous);
   while(!file_tous.eof()){
     file_tous>>dN_tous>>dX_tous>>Z0_tous>>x_tous>>px_tous>>y_tous>>py_tous>>Z_tous>>dE_tous>>nturn_tous;
+    //cout<<"dN:"<<dN_tous<<"; Z0:"<<Z0_tous<<"; Z:"<<Z_tous<<endl;
     if(nturn_tous==1001||Z_tous<(-1*IRlength)||Z_tous>IRlength) continue;
     dN_tous=dN_tous/nfile;
     newtree_tous->GetEntry(Nid_tous);
@@ -102,6 +103,7 @@ void Gene(int i,int nfile){
 void GeneIRRoot(){
   int ID_start=100,ID_end=200,nfile=ID_end-ID_start;
   for(int i=ID_start;i<ID_end;i++){
+    if(ID_start==168) continue;
     cout<<"make "<<i<<" root file"<<endl;
     Gene(i,nfile);
   }
