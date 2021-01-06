@@ -115,7 +115,7 @@ Do[
 !  set beam1 for test
 !  beam1={1,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
-!  Print[beam2];
+  Print[beam2];
 
   dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
 
@@ -128,6 +128,6 @@ Close[fileTracking];
 
 !Exit[];
 
-!nturn=128;
+!nturn=1000;
 !DynamicApertureSurvey[{Table[dx,{dx,-20,20,1}],{0,50*Sqrt[MINCOUP]},{0,0}},nturn,Axes->'XY',Output->$Output];
 
