@@ -8,9 +8,7 @@ using namespace TMath;
 void GeneG4Input(){
   double E0=1890,me=0.511; // MeV
   double p0=sqrt(E0*E0-me*me);
-  double theta=0.011;
-  double cost=cos(theta);
-  double sint=sin(theta); 
+  double theta,cost,sint;
 
   TFile *fileTracking = new TFile("rootfiles/all.root");
   TTree *toustree = (TTree*) fileTracking->Get("Tous");
@@ -50,6 +48,12 @@ void GeneG4Input(){
   Int_t ntous=toustree->GetEntries();
   for(Int_t itous=0;itous<ntous;itous++){
     toustree->GetEntry(itous);
+
+    if(fabs(z_tous)<0.909) theta=0.011;
+    else if(fabs(z_tous)<1.509) theta=0.0185;
+    else theta=0.026;
+    cost=cos(theta); sint=sin(theta); 
+
     dN_tousnew=dN_tous;
     double px_cm=px_tous*p0;
     double py_cm=py_tous*p0;
@@ -93,6 +97,11 @@ void GeneG4Input(){
   Int_t ncoul=coultree->GetEntries();
   for(Int_t icoul=0;icoul<ncoul;icoul++){
     coultree->GetEntry(icoul);
+
+    if(fabs(z_coul)<0.909) theta=0.011;
+    else if(fabs(z_coul)<1.509) theta=0.0185;
+    else theta=0.026;
+
     dN_coulnew=dN_coul;
     double px_cm=px_coul*p0;
     double py_cm=py_coul*p0;
@@ -136,6 +145,11 @@ void GeneG4Input(){
   Int_t nbrem=bremtree->GetEntries();
   for(Int_t ibrem=0;ibrem<nbrem;ibrem++){
     bremtree->GetEntry(ibrem);
+
+    if(fabs(z_brem)<0.909) theta=0.011;
+    else if(fabs(z_brem)<1.509) theta=0.0185;
+    else theta=0.026;
+
     dN_bremnew=dN_brem;
     double px_cm=px_brem*p0;
     double py_cm=py_brem*p0;

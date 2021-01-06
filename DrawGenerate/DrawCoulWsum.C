@@ -10,7 +10,7 @@ using namespace std;
 using namespace TMath;
 typedef std::vector<double> Vdouble;
 
-void DrawTousWsum(){
+void DrawCoulWsum(){
   gStyle->SetOptStat(0);
   gStyle->SetFrameLineWidth(3);
 
@@ -24,10 +24,9 @@ void DrawTousWsum(){
   double num_bunch=200;
   double N_bunch = bunch_current*(circum/c_light)/charge_e;  
   double N_beam = num_bunch*N_bunch;
-  double NinScat = 30000;
 
-  ifstream file_Wsum(Form("../output/TousWsumtoS.txt"));
-  double Vs[2000],VN[2000],Vlscat[2000],;
+  ifstream file_Wsum(Form("../output/CoulWsumtoS.txt"));
+  Double_t Vs[2000],VN[2000],Vlscat[2000],;
   double s,w,lscat,tau=0;
   int i=0;
   while(!file_Wsum.eof()){
@@ -41,12 +40,11 @@ void DrawTousWsum(){
   cout<<"life time:"<<1/(tau*3600)<<" hour"<<endl;
 
   int n_total=i;
-  int nbin = 200;
+  int nbin = 100;
   double xmin = 300, xmax = 450, ymax=1e6;
   //TH1F* h1 = new TH1F("h1","",nbin,xmin,xmax);
   //h1->SetFillColor(kRed);
   TGraph* h1 = new TGraph(n_total,Vs,VN);
-  h1->SetTitle("Generate distribution for Touschek");
   h1->GetXaxis()->SetTitle("position / m");
   h1->GetYaxis()->SetTitle("Loss rate / Hz");
   h1->GetXaxis()->SetRangeUser(xmin,xmax);
@@ -57,6 +55,6 @@ void DrawTousWsum(){
 
   TCanvas *c1 = new TCanvas();
   h1->Draw("A*");
-  c1->Print("TousNumDis.eps"); 
+  c1->Print("CoulNumDis.eps"); 
 }
 

@@ -155,7 +155,8 @@ XSectionC[theta_]:=Module[{},
 
 CoulombScat[beam_,maxtheta_:0.001]:=Module[{delta},
   npar=Length[beam[[2,7]]];
-  th=maxtheta*Random[npar];
+  !th=maxtheta*Random[npar];
+  th=maxtheta*Range[npar]/npar; ! use array instead of sampling
   ph=2*Pi*Random[npar];
   pxc=beam[[2,2]]+(1+beam[[2,6]])*th*Cos[ph];
   pyc=beam[[2,4]]+(1+beam[[2,6]])*th*Sin[ph];

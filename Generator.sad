@@ -64,10 +64,10 @@ mat2scat=TransferMatrices/.Emittance[Matrix->True];
 
 (* Generate *)
 !region=Module[{p},p=LINE["POSITION"];{Min[p],Max[p]}];
-npar=3000;
+npar=10000;
 
 beam0=GenParticles[npar, emitx, emity];
-proc="B";
+proc="C";
 !nscat=3;
 
 If[proc=="T", 
@@ -76,7 +76,7 @@ If[proc=="T",
 ];
 
 If[proc=="C",
-  thetamax=0.17444;  !theta max cut off is 10 degree
+  thetamax=0.0017444;  !theta max cut off is 10 degree
   filenameWto="output/CoulWtoTheta.txt";
   filenameWsumto="output/CoulWsumtoS.txt";
 ];
