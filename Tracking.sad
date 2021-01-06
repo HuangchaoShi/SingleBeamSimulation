@@ -11,10 +11,14 @@ Get["inc/libApertSTCF.n"];
 Get["inc/libRecord.n"];
 Get["inc/slice.n"];
 
-latticeFile="lattice/STCF.sad";
+!latticeFile="lattice/STCF_v1.sad";
+!GetMAIN[latticeFile];
+!GetMAIN["lattice/STCFnoRepeat_v1.sad"];
+!USE STCFNoRepeat;
+
+latticeFile="lattice/STCF_liutao_v1.sad";
 GetMAIN[latticeFile];
-GetMAIN["lattice/STCFnoRepeat.sad"];
-USE STCFNoRepeat;
+USE TOTALRING;
 
 !latticeFile="lattice/BEPCII.sad";
 !GetMAIN[latticeFile];
@@ -22,10 +26,8 @@ USE STCFNoRepeat;
 
 CELL;
 CALC;
+EMIT;
 
-RFSW;
-RAD;
-NOFLUC;
 GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 
 (* Set parameters *)
@@ -58,7 +60,8 @@ nscat=Length[pscat];
 lscat=LINE["S",Drop[pscat,1]]-LINE["S",Drop[pscat,-1]];
 lscat=AppendTo[lscat,LINE["S","$$$"]-LINE["S",pscat[[-1]]]+LINE["S",pscat[[1]]]];
 
-FFS["RFSW RAD FLUC"];
+
+!FFS["RFSW RAD FLUC"];
 FFS["INTRA"];
 
 (* Emit Parameters *)
@@ -108,8 +111,12 @@ Do[
   If[proc=="B",
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
-  !beam1={10,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
+
+!  set beam1 for test
+!  beam1={1,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];
+!  Print[beam2];
+
   dN=CalLostNumber[proc,w,beamCurrent,bunchNum,lscat[[iscat]],circum,pgas];
 
   DisIP=LostDisFromIP[beam2,circum];
@@ -121,5 +128,6 @@ Close[fileTracking];
 
 !Exit[];
 
-
+!nturn=128;
+!DynamicApertureSurvey[{Table[dx,{dx,-20,20,1}],{0,50*Sqrt[MINCOUP]},{0,0}},nturn,Axes->'XY',Output->$Output];
 

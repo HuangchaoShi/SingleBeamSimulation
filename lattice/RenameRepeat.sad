@@ -1,7 +1,7 @@
-!用于把lattice中重复的元件改写为"base"R"num"的形式，如FD1R2,目前包括对drift, quad, bend的改写
+!用于把lattice中重复的元件改写为"base"R"num"的形式，如FD1R2,目前包括对drift, quad, sext, bend的改写
 
 FFS;
-latticeFile="STCF.sad";
+latticeFile="STCF_v1.sad";
 GetMAIN[latticeFile];
 
 USE totalring;
@@ -23,10 +23,11 @@ LastIndexOfBaseName[name_]:=Module[{i},
   i
 ];
 
-fileNewName="STCFnoRepeat.sad";
+fileNewName="STCFnoRepeat_v1.sad";
 fileNew=OpenWrite[fileNewName];
 NewLine={};
 QuadName={};QuadK1={};QuadL={};
+SextName={};SextK2={};SextL={};
 DriftName={};DriftL={};
 BendName={};BendL={};BendANGLE={};BendAE1={};BendAE2={};
 Do[
@@ -44,6 +45,11 @@ Do[
     AppendTo[QuadName, NewName];
     AppendTo[QuadK1 ,LINE["K1",Allposi[[i]]] ];
     AppendTo[QuadL,  LengthEle[[i]] ]; 
+  ];
+  If[(TypeName=="SEXT"),
+    AppendTo[SextName, NewName];
+    AppendTo[SextK2 ,LINE["K2",Allposi[[i]]] ];
+    AppendTo[SextL,  LengthEle[[i]] ];
   ];
   If[(TypeName=="DRIFT"),
     AppendTo[DriftName,NewName];
@@ -65,6 +71,11 @@ Do[ Write[fileNew,DriftName[[i]],"=(L=",DriftL[[i]],")"];
 Write[fileNew,"; QUAD"];
 Do[ Write[fileNew,QuadName[[i]],"=(L=",QuadL[[i]]," K1=",QuadK1[[i]],")"]; 
 ,{i,1,Length[QuadName] }];
+
+Write[fileNew,"; SEXT"];
+Do[ Write[fileNew,SextName[[i]],"=(L=",SextL[[i]]," K2=",SextK2[[i]],")"];
+!Do[ Write[fileNew,SextName[[i]],"=(L=",SextL[[i]]," K2=",0,")"];
+,{i,1,Length[SextName] }];
 
 Write[fileNew,"; BEND"];
 Do[ Write[fileNew,BendName[[i]],"=(L=",BendL[[i]]," ANGLE=",BendANGLE[[i]]," AE1=",BendAE1[[i]]," AE2=",BendAE2[[i]],")"];
