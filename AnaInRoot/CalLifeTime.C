@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-const double IRlength=2.875;
+const double IRlength=4;
 
 double ReadNtotal(TString filename){
   ifstream file1(filename);
@@ -91,9 +91,9 @@ void CalLifeTime(){
   cout<<"Bremsstrahlung Loss rate: "<<NIRtotal_brem/1e6<<"MHz"<<endl;
   cout<<"Coulomb Loss rate: "<<NIRtotal_coul/1e6<<"MHz"<<endl;
 
-//  cout<<"Touschek evt rate: "<<EvtIRtotal_tous<<endl;
-//  cout<<"Bremsstrahlung evt rate: "<<EvtIRtotal_brem<<endl;
-//  cout<<"Coulomb evt rate: "<<EvtIRtotal_coul<<endl;   
+  cout<<"Touschek evt rate: "<<EvtIRtotal_tous<<endl;
+  cout<<"Bremsstrahlung evt rate: "<<EvtIRtotal_brem<<endl;
+  cout<<"Coulomb evt rate: "<<EvtIRtotal_coul<<endl;   
 
   exit();
 }

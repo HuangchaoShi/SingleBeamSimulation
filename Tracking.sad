@@ -11,18 +11,27 @@ Get["inc/libApertSTCF.n"];
 Get["inc/libRecord.n"];
 Get["inc/slice.n"];
 
+!----------STCF---------------------------------------
 !latticeFile="lattice/STCF_v1.sad";
 !GetMAIN[latticeFile];
 !GetMAIN["lattice/STCFnoRepeat_v1.sad"];
 !USE STCFNoRepeat;
+!Get["lattice/Para_STCF_v1.txt"];
 
-latticeFile="lattice/STCF_liutao_v1.sad";
-GetMAIN[latticeFile];
-USE TOTALRING;
-
-!latticeFile="lattice/BEPCII.sad";
+!latticeFile="lattice/STCF_liutao_v1.sad";
 !GetMAIN[latticeFile];
-!USE RING;
+!GetMAIN["lattice/STCFnoRepeat_liutao_v1.sad"];
+!USE STCFNoRepeat;
+!USE TOTALRING;
+!Get["lattice/Para_STCF_v1.txt"];
+!-------------------------------------------------------
+
+!-----------BEPC----------------------------------
+latticeFile="lattice/BEPCII.sad";
+GetMAIN[latticeFile];
+USE RING;
+Get["lattice/Para_BEPC.txt"];
+!-----------------------------------------------
 
 CELL;
 CALC;
@@ -33,8 +42,6 @@ GCUT=3; !cut-off value of Gaussian distribution,3-sigma
 (* Set parameters *)
 If[iseed<>-1,SeedRandom[iseed]];
 date0=DateString[];
-!Get["lattice/Para_BEPC.txt"];
-Get["lattice/Para_STCF.txt"];
 
 (* adjust beamline *)
 bl=DeleteSOL[];
@@ -112,6 +119,7 @@ Do[
     {w,dX,beam1}=BremsScat[beam,minu];
   ];
 
+  Print[dX];
 !  set beam1 for test
 !  beam1={1,{{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0},{1,1,1}}};
   beam2=TrackParticles[beam1,pscat[[iscat]],1,maxturns];

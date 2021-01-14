@@ -1,11 +1,13 @@
 !用于把lattice中重复的元件改写为"base"R"num"的形式，如FD1R2,目前包括对drift, quad, sext, bend的改写
 
 FFS;
-latticeFile="STCF_v0.sad";
+
+latticeFile="STCF_liutao_v1.sad";
 GetMAIN[latticeFile];
 
-USE totalring;
-!USE TOTALRING;
+!USE totalring;
+USE TOTALRING;
+
 CELL;
 CALC;
 
@@ -13,7 +15,7 @@ Allposi=LINE["POSITION"];
 AllNames=LINE["NAME",Allposi];
 Print[AllNames];
 LengthEle=LINE["S",Drop[Allposi,1]]-LINE["S",Drop[Allposi,-1]];
-LengthEle=PrependTo[lobs,LINE["S",Allposi[[1]]] ];
+LengthEle=PrependTo[LengthEle,LINE["S",Allposi[[1]]] ];
 
 LastIndexOfBaseName[name_]:=Module[{i},
   dotPositions = StringPosition[name, "."];

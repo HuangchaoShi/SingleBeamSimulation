@@ -69,7 +69,7 @@ fileTracking=OpenWrite[filename];
 Do[
   beam=MoveScatPoint[beam0,pscat[[iscat]]];
   !dX means offset value: de for touschek and brems, dtheta for coulomb scattering
-  !Print["Scattering at:"//LINE["NAME",pscat[[iscat]]]//" "//LINE["POSITION",pscat[[iscat]]] ];
+  Print["Scattering at:"//LINE["NAME",pscat[[iscat]]]//" "//LINE["POSITION",pscat[[iscat]]] ];
 
   If[proc=="T",
     {w,dX,beam1}=TouscScat[beam,npar,emitx,emity,Lbunch,sigE];
